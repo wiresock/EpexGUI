@@ -47,14 +47,14 @@ jobs:
         with:
           type: 'zip'
           filename: 'WireSockUI-${{ github.ref_name }}-${{ matrix.platform }}${{ matrix.uwp_suffix }}.zip'
-          directory: 'bin\exe\${{ matrix.build_configuration }}'
+          directory: 'bin\exe\${{ matrix.platform }}\${{ matrix.build_configuration }}'
           exclusions: '*.pdb'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.platform }}-artifact
-          path: 'bin\exe\${{ matrix.build_configuration }}\WireSockUI-${{ github.ref_name }}-${{ matrix.platform }}${{ matrix.uwp_suffix }}.zip'
+          path: 'bin\exe\${{ matrix.platform }}\${{ matrix.build_configuration }}\WireSockUI-${{ github.ref_name }}-${{ matrix.platform }}${{ matrix.uwp_suffix }}.zip'
 
   upload-release:
     if: ${{ always() }}
