@@ -28,6 +28,8 @@ namespace WireSockUI.Forms
         private readonly BackgroundWorker _tunnelConnectionWorker;
         private readonly BackgroundWorker _tunnelStateWorker;
 
+        private ConnectionState _currentState = ConnectionState.Disconnected;
+
         /**
          * @brief The manager that handles the Wireguard connections.
          */
@@ -237,7 +239,7 @@ namespace WireSockUI.Forms
             {
                 case ConnectionState.Connecting:
                     btnActivate.Text = Resources.ButtonActivating;
-                    btnActivate.Enabled = false;
+                    btnActivate.Enabled = true;
                     imgStatus.Focus();
 
                     lstProfiles.Items[_wiresock.ProfileName].ImageKey = ConnectionState.Connecting.ToString();
@@ -300,7 +302,8 @@ namespace WireSockUI.Forms
                         if (item is ToolStripMenuItem menuItem && Equals(menuItem.Tag, "tunnel"))
                             menuItem.Checked = false;
 
-                    lstProfiles.Items[_wiresock.ProfileName].ImageKey = ConnectionState.Disconnected.ToString();
+                    if (_wiresock.ProfileName != null)
+                        lstProfiles.Items[_wiresock.ProfileName].ImageKey = ConnectionState.Disconnected.ToString();
 
                     gbxState.Visible = false;
                     _tunnelStateWorker.CancelAsync();
@@ -311,6 +314,8 @@ namespace WireSockUI.Forms
                     _wiresock.Disconnect();
                     break;
             }
+
+            _currentState = state;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -443,22 +448,79 @@ namespace WireSockUI.Forms
             }
         }
 
+        /// <summary>
+        /// Handles the profile click event for a given sender and event arguments.
+        /// This function is responsible for updating the connection state and tunnel mode,
+        /// connecting or reconnecting to a profile depending on the button's text and the current state.
+        /// </summary>
+        /// <param name="sender">The source of the event. In this case, a Button control.</param>
+        /// <param name="e">The event arguments containing information about the event.</param>
         private void OnProfileClick(object sender, EventArgs e)
         {
+            // Return if no profile is selected in the list.
             if (lstProfiles.SelectedItems.Count == 0) return;
 
-            if (_wiresock.Connected)
+            // Check if the event arguments are not empty.
+            if (e != EventArgs.Empty)
             {
-                UpdateState(ConnectionState.Disconnected);
+                // Check if the current state is connected or connecting.
+                if ((_currentState == ConnectionState.Connected || _currentState == ConnectionState.Connecting) &&
+                    e != EventArgs.Empty)
+                {
+                    var reconnect = false;
+
+                    // Check if the sender is a Button, and if its text is equal to ButtonInactive.
+                    if (sender is Button senderButton)
+                        if (senderButton.Text == Resources.ButtonInactive)
+                            reconnect = true;
+
+                    // Update the state to disconnected.
+                    UpdateState(ConnectionState.Disconnected);
+
+                    // Proceed with reconnecting if the reconnect flag is set.
+                    if (!reconnect) return;
+
+                    // Set the tunnel mode based on the application settings.
+                    _wiresock.TunnelMode = Settings.Default.UseAdapter
+                        ? WireSockManager.Mode.VirtualAdapter
+                        : WireSockManager.Mode.Transparent;
+
+                    // Get the selected profile.
+                    var profile = lstProfiles.SelectedItems[0].Text;
+
+                    // Connect to the selected profile and update the state to connecting if successful.
+                    if (_wiresock.Connect(profile))
+                        UpdateState(ConnectionState.Connecting);
+                }
+                else
+                {
+                    // Set the tunnel mode based on the application settings.
+                    _wiresock.TunnelMode = Settings.Default.UseAdapter
+                        ? WireSockManager.Mode.VirtualAdapter
+                        : WireSockManager.Mode.Transparent;
+
+                    // Get the selected profile.
+                    var profile = lstProfiles.SelectedItems[0].Text;
+
+                    // Connect to the selected profile and update the state to connecting if successful.
+                    if (_wiresock.Connect(profile))
+                        UpdateState(ConnectionState.Connecting);
+                }
             }
             else
             {
+                // Update the state to disconnected.
+                UpdateState(ConnectionState.Disconnected);
+
+                // Set the tunnel mode based on the application settings.
                 _wiresock.TunnelMode = Settings.Default.UseAdapter
                     ? WireSockManager.Mode.VirtualAdapter
                     : WireSockManager.Mode.Transparent;
 
+                // Get the selected profile.
                 var profile = lstProfiles.SelectedItems[0].Text;
 
+                // Connect to the selected profile and update the state to connecting if successful.
                 if (_wiresock.Connect(profile))
                     UpdateState(ConnectionState.Connecting);
             }

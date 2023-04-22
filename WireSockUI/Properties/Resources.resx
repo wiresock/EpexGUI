@@ -145,7 +145,7 @@
     <value>https://www.wiresock.net/</value>
   </data>
   <data name="ButtonActivating" xml:space="preserve">
-    <value>Activating...</value>
+    <value>Activating... Click to Cancel</value>
   </data>
   <data name="ButtonActive" xml:space="preserve">
     <value>Deactivate</value>

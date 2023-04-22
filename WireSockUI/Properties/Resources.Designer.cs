@@ -142,7 +142,7 @@ namespace WireSockUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Activating....
+        ///   Looks up a localized string similar to Activating... Click to Cancel.
         /// </summary>
         internal static string ButtonActivating {
             get {

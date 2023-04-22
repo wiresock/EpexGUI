@@ -808,7 +808,8 @@ namespace WireSockUI.Config
 
             if (signingKey != null && signingKey.Length != 32)
                 throw new ArgumentException(
-                    $@"signingKey must be null or 32 bytes long (but was {signingKey.Length} bytes long)", nameof(signingKey));
+                    $@"signingKey must be null or 32 bytes long (but was {signingKey.Length} bytes long)",
+                    nameof(signingKey));
 
             if (privateKey == null) throw new ArgumentNullException(nameof(privateKey));
             if (privateKey.Length != 32)
@@ -818,7 +819,8 @@ namespace WireSockUI.Config
 
             if (peerPublicKey != null && peerPublicKey.Length != 32)
                 throw new ArgumentException(
-                    $@"peerPublicKey must be null or 32 bytes long (but was {peerPublicKey.Length} bytes long)", nameof(peerPublicKey));
+                    $@"peerPublicKey must be null or 32 bytes long (but was {peerPublicKey.Length} bytes long)",
+                    nameof(peerPublicKey));
 
             Long10
                 dx = new Long10(),

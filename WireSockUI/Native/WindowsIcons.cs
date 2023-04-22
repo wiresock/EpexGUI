@@ -125,10 +125,7 @@ namespace WireSockUI.Native
 
                 // Create the icon from the resource
                 var hIcon = CreateIconFromResourceEx(lpResource, sz, true, 0x00030000, size, size, 0);
-                if (hIcon != IntPtr.Zero)
-                {
-                    icon = Icon.FromHandle(hIcon);
-                }
+                if (hIcon != IntPtr.Zero) icon = Icon.FromHandle(hIcon);
             }
             finally
             {

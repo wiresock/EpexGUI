@@ -11,16 +11,16 @@ namespace WireSockUI.Native
     {
         // External function declarations
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern uint GetPrivateProfileSectionNames([In][Out] char[] lpszReturnBuffer, int nSize,
+        private static extern uint GetPrivateProfileSectionNames([In] [Out] char[] lpszReturnBuffer, int nSize,
             string lpFileName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern uint GetPrivateProfileSection(string lpAppName, [In][Out] char[] lpszReturnBuffer,
+        private static extern uint GetPrivateProfileSection(string lpAppName, [In] [Out] char[] lpszReturnBuffer,
             int nSize, string lpFileName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault,
-            [In][Out] char[] lpReturnedString, int nSize, string lpFileName);
+            [In] [Out] char[] lpReturnedString, int nSize, string lpFileName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern long WritePrivateProfileString(string name, string key, string val, string filePath);

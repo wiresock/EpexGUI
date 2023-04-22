@@ -16,29 +16,19 @@ namespace WireSockUI.Forms
             InitializeComponent();
 
             // Safely set the icon
-            if (Resources.ico != null)
-            {
-                Icon = Resources.ico;
-            }
+            if (Resources.ico != null) Icon = Resources.ico;
 
             // Safely set the refresh button image
             var refreshIcon = WindowsIcons.GetWindowsIcon(WindowsIcons.Icons.Refresh, 16);
-            if (refreshIcon != null)
-            {
-                btnRefresh.Image = refreshIcon.ToBitmap();
-            }
+            if (refreshIcon != null) btnRefresh.Image = refreshIcon.ToBitmap();
 
             // Ensure the process list rows fill the entire width, but no scrollbar appears
             if (lstProcesses != null && lstProcesses.Columns.Count > 0)
-            {
                 lstProcesses.Columns[0].Width = lstProcesses.Size.Width - 18;
-            }
 
             // Safely set the cue banner text
             if (txtSearch != null && Resources.ProcessesSearchCue != null)
-            {
                 txtSearch.SetCueBanner(Resources.ProcessesSearchCue);
-            }
 
             UpdateProcesses();
         }
@@ -60,10 +50,7 @@ namespace WireSockUI.Forms
             // Add a default icon to the list view's image list
             const string defaultIconKey = "DefaultIcon";
             var defaultIcon = Resources.ico; // Replace with the appropriate resource for the default icon
-            if (defaultIcon != null)
-            {
-                lstProcesses.SmallImageList.Images.Add(defaultIconKey, (Icon)defaultIcon.Clone());
-            }
+            if (defaultIcon != null) lstProcesses.SmallImageList.Images.Add(defaultIconKey, (Icon)defaultIcon.Clone());
 
             // Add process items to the list view
             foreach (var process in processes)
@@ -78,18 +65,12 @@ namespace WireSockUI.Forms
                         using (var icon = Icon.ExtractAssociatedIcon(process.ImageName))
                         {
                             if (icon != null)
-                            {
                                 lstProcesses.SmallImageList.Images.Add(iconKey, (Icon)icon.Clone());
-                            }
                             else
-                            {
                                 iconKey = defaultIconKey;
-                            }
                         }
                     else
-                    {
-                            iconKey = defaultIconKey;
-                    }
+                        iconKey = defaultIconKey;
                 }
                 else
                 {
