@@ -227,8 +227,11 @@ namespace WireSockUI.Forms
         /// <param name="state">
         ///     <see cref="T:ConnectionState" />
         /// </param>
+        /// <param name="notify">
+        ///     <c>true</c> if a toast notification should be triggered, otherwise <c>false</c>
+        /// </param>
         /// <remarks>This updates both the actual tunnel state and all related UI elements.</remarks>
-        private void UpdateState(ConnectionState state)
+        private void UpdateState(ConnectionState state, bool notify = true)
         {
             var btnActivate = layoutInterface.Controls["btnActivate"] as Button;
             var imgStatus = layoutInterface.Controls.Find("imgStatus", true).FirstOrDefault() as PictureBox;
@@ -279,8 +282,9 @@ namespace WireSockUI.Forms
                     if (!_tunnelStateWorker.IsBusy)
                         _tunnelStateWorker.RunWorkerAsync();
 
-                    Notifications.Notifications.Notify(Resources.ToastActiveTitle,
-                        string.Format(Resources.ToastActiveMessage, _wiresock.ProfileName));
+                    if (notify)
+                        Notifications.Notifications.Notify(Resources.ToastActiveTitle,
+                            string.Format(Resources.ToastActiveMessage, _wiresock.ProfileName));
                     break;
                 case ConnectionState.Disconnected:
                     btnActivate.Text = Resources.ButtonInactive;
@@ -308,8 +312,9 @@ namespace WireSockUI.Forms
                     gbxState.Visible = false;
                     _tunnelStateWorker.CancelAsync();
 
-                    Notifications.Notifications.Notify(Resources.ToastInactiveTitle,
-                        string.Format(Resources.ToastInactiveMessage, _wiresock.ProfileName));
+                    if (notify)
+                        Notifications.Notifications.Notify(Resources.ToastInactiveTitle,
+                            string.Format(Resources.ToastInactiveMessage, _wiresock.ProfileName));
 
                     _wiresock.Disconnect();
                     break;
@@ -717,6 +722,15 @@ namespace WireSockUI.Forms
                     AddRow(layoutState, "Loss", Resources.StateLoss, "");
 
                     layoutState.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+                    // Only 1 profile can be active at a time, either show the active state or do not allow to activate
+                    if (_wiresock.Connected)
+                    {
+                        if (_wiresock.ProfileName == selectedConf)
+                            UpdateState(ConnectionState.Connected, false);
+                        else
+                            btnActivate.Enabled = false;
+                    }
                 }
                 catch (Exception ex)
                 {
