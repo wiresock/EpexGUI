@@ -131,11 +131,10 @@ namespace WireSockUI.Forms
                 {
                     Thread.Sleep(1000);
 
-                    if (_wiresock.Connected)
-                    {
-                        var stats = _wiresock.GetState();
-                        worker.ReportProgress(0, stats);
-                    }
+                    if (!_wiresock.Connected) continue;
+
+                    var stats = _wiresock.GetState();
+                    worker.ReportProgress(0, stats);
                 }
             };
 

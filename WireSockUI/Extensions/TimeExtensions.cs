@@ -5,9 +5,9 @@ namespace WireSockUI.Extensions
 {
     internal static class TimeExtensions
     {
-        public static string AsTimeAgo(this long ticks)
+        public static string AsTimeAgo(this long seconds)
         {
-            return new TimeSpan(ticks).AsTimeAgo();
+            return new TimeSpan(0,0, (int)seconds).AsTimeAgo();
         }
 
         public static string AsTimeAgo(this TimeSpan value)
