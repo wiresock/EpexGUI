@@ -365,12 +365,14 @@ namespace WireSockUI.Forms
         /// <param name="e">An EventArgs that contains the event data.</param>
         private void OnFormShow(object sender, EventArgs e)
         {
+            TopMost = true;
             Show();
             WindowState = FormWindowState.Normal;
             BringToFront();
             Activate();
+            TopMost = false;
         }
-        
+
         private void OnFormMinimize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
