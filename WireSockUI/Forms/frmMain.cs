@@ -358,12 +358,19 @@ namespace WireSockUI.Forms
             Hide();
         }
 
+        /// <summary>
+        /// Handles the form show event.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void OnFormShow(object sender, EventArgs e)
         {
             Show();
             WindowState = FormWindowState.Normal;
+            BringToFront();
+            Activate();
         }
-
+        
         private void OnFormMinimize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)

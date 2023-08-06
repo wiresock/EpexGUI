@@ -7,7 +7,7 @@ namespace WireSockUI.Extensions
     {
         public static string AsTimeAgo(this long seconds)
         {
-            return new TimeSpan(0,0, (int)seconds).AsTimeAgo();
+            return new TimeSpan(0, 0, (int)seconds).AsTimeAgo();
         }
 
         public static string AsTimeAgo(this TimeSpan value)
