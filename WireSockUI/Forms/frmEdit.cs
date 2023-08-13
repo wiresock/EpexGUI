@@ -18,7 +18,7 @@ namespace WireSockUI.Forms
         private static readonly Regex MultiValueMatch =
             new Regex(@"[^, ]*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        private volatile bool _highlighting = false;
+        private volatile bool _highlighting;
 
         public FrmEdit()
         {
@@ -131,56 +131,56 @@ namespace WireSockUI.Forms
                         case "privatekey":
                         case "publickey":
                         case "presharedkey":
-                            {
-                                if (!string.IsNullOrEmpty(value))
-                                    try
-                                    {
-                                        if (key == "privatekey")
-                                            txtPublicKey.Text = string.Empty;
+                        {
+                            if (!string.IsNullOrEmpty(value))
+                                try
+                                {
+                                    if (key == "privatekey")
+                                        txtPublicKey.Text = string.Empty;
 
-                                        var binaryKey = Convert.FromBase64String(value);
+                                    var binaryKey = Convert.FromBase64String(value);
 
-                                        if (binaryKey.Length != 32)
-                                            throw new FormatException();
+                                    if (binaryKey.Length != 32)
+                                        throw new FormatException();
 
-                                        // Convert Peer.PrivateKey into PublicKey for display
-                                        if (key == "privatekey")
-                                            txtPublicKey.Text = Convert.ToBase64String(Curve25519.GetPublicKey(binaryKey));
-                                    }
-                                    catch (FormatException)
-                                    {
-                                        txtEditor.UnderlineSelection();
-                                        hasErrors = true;
-                                    }
-                            }
+                                    // Convert Peer.PrivateKey into PublicKey for display
+                                    if (key == "privatekey")
+                                        txtPublicKey.Text = Convert.ToBase64String(Curve25519.GetPublicKey(binaryKey));
+                                }
+                                catch (FormatException)
+                                {
+                                    txtEditor.UnderlineSelection();
+                                    hasErrors = true;
+                                }
+                        }
                             break;
                         // IPv4/IPv6 CIDR notation values
                         case "address":
                         case "allowedips":
                         case "disallowedips":
-                            {
-                                foreach (Match e in MultiValueMatch.Matches(value))
-                                    if (!string.IsNullOrWhiteSpace(e.Value) && !IpHelper.IsValidCidr(e.Value))
-                                    {
-                                        txtEditor.SelectionStart = m.Groups["value"].Index + e.Index;
-                                        txtEditor.SelectionLength = e.Length;
-                                        txtEditor.UnderlineSelection();
-                                        hasErrors = true;
-                                    }
-                            }
+                        {
+                            foreach (Match e in MultiValueMatch.Matches(value))
+                                if (!string.IsNullOrWhiteSpace(e.Value) && !IpHelper.IsValidCidr(e.Value))
+                                {
+                                    txtEditor.SelectionStart = m.Groups["value"].Index + e.Index;
+                                    txtEditor.SelectionLength = e.Length;
+                                    txtEditor.UnderlineSelection();
+                                    hasErrors = true;
+                                }
+                        }
                             break;
                         // IPv4/IPv6 values
                         case "dns":
-                            {
-                                foreach (Match e in MultiValueMatch.Matches(value))
-                                    if (!string.IsNullOrWhiteSpace(e.Value) && !IpHelper.IsValidIpAddress(e.Value))
-                                    {
-                                        txtEditor.SelectionStart = m.Groups["value"].Index + e.Index;
-                                        txtEditor.SelectionLength = e.Length;
-                                        txtEditor.UnderlineSelection();
-                                        hasErrors = true;
-                                    }
-                            }
+                        {
+                            foreach (Match e in MultiValueMatch.Matches(value))
+                                if (!string.IsNullOrWhiteSpace(e.Value) && !IpHelper.IsValidIpAddress(e.Value))
+                                {
+                                    txtEditor.SelectionStart = m.Groups["value"].Index + e.Index;
+                                    txtEditor.SelectionLength = e.Length;
+                                    txtEditor.UnderlineSelection();
+                                    hasErrors = true;
+                                }
+                        }
 
                             break;
                         // IPv4, IPv6 or DNS value
@@ -195,37 +195,38 @@ namespace WireSockUI.Forms
                             break;
                         // Numerical values
                         case "mtu":
+                        case "listenport":
                         case "persistentkeepalive":
+                        {
+                            if (!int.TryParse(m.Groups["value"].Value, out var intValue))
                             {
-                                if (!int.TryParse(m.Groups["value"].Value, out var intValue))
+                                txtEditor.UnderlineSelection();
+                                hasErrors = true;
+                            }
+                            else
+                            {
+                                if (intValue < 0 || intValue > 65535)
                                 {
                                     txtEditor.UnderlineSelection();
                                     hasErrors = true;
                                 }
-                                else
-                                {
-                                    if (intValue < 0 || intValue > 65535)
-                                    {
-                                        txtEditor.UnderlineSelection();
-                                        hasErrors = true;
-                                    }
-                                }
                             }
+                        }
                             break;
                         // Comma-delimited string values
                         case "allowedapps":
                         case "disallowedapps":
-                            {
-                                foreach (Match e in MultiValueMatch.Matches(value))
-                                    if (!string.IsNullOrWhiteSpace(e.Value) &&
-                                        !Regex.IsMatch(e.Value, @"^[a-z0-9_-]+$", RegexOptions.IgnoreCase))
-                                    {
-                                        txtEditor.SelectionStart = m.Groups["value"].Index + e.Index;
-                                        txtEditor.SelectionLength = e.Length;
-                                        txtEditor.UnderlineSelection();
-                                        hasErrors = true;
-                                    }
-                            }
+                        {
+                            foreach (Match e in MultiValueMatch.Matches(value))
+                                if (!string.IsNullOrWhiteSpace(e.Value) &&
+                                    !Regex.IsMatch(e.Value, @"^[a-z0-9_-]+$", RegexOptions.IgnoreCase))
+                                {
+                                    txtEditor.SelectionStart = m.Groups["value"].Index + e.Index;
+                                    txtEditor.SelectionLength = e.Length;
+                                    txtEditor.UnderlineSelection();
+                                    hasErrors = true;
+                                }
+                        }
                             break;
                         // String values
                         case "socks5proxyusername":

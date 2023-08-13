@@ -18,6 +18,7 @@ namespace WireSockUI.Config
         private string _allowedIPs;
         private string _dns;
         private string _endpoint;
+        private string _listenport;
         private string _mtu;
         private string _persistentKeepAlive;
 
@@ -155,7 +156,7 @@ namespace WireSockUI.Config
         }
 
         /// <summary>
-        ///     Interface Maximum Transmissable Unit size
+        ///     Interface Maximum Transmissible Unit size
         /// </summary>
         public string Mtu
         {
@@ -175,6 +176,32 @@ namespace WireSockUI.Config
                 else
                 {
                     _mtu = null;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Interface ListenPort
+        /// </summary>
+        public string ListenPort
+        {
+            get => _listenport;
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (!int.TryParse(value, out var listenPort))
+                        throw new FormatException("\"ListenPort\" in \"Interface\", is not a numerical value.");
+
+                    if (listenPort < 1 || listenPort > 65535)
+                        throw new FormatException(
+                            "\"ListenPort\" in \"Interface\", invalid value. Expected 1...65535.");
+
+                    _listenport = value;
+                }
+                else
+                {
+                    _listenport = null;
                 }
             }
         }

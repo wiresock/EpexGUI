@@ -1,40 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace WireSockUI.Native
 {
     /// <summary>
-    /// Provides methods to read and write INI files using Windows native APIs.
+    ///     Provides methods to read and write INI files using Windows native APIs.
     /// </summary>
     internal static class IniFile
     {
         // External function declarations
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern uint GetPrivateProfileSectionNames([In][Out] char[] lpszReturnBuffer, int nSize,
+        private static extern uint GetPrivateProfileSectionNames([In] [Out] char[] lpszReturnBuffer, int nSize,
             string lpFileName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern uint GetPrivateProfileSection(string lpAppName, [In][Out] char[] lpszReturnBuffer,
+        private static extern uint GetPrivateProfileSection(string lpAppName, [In] [Out] char[] lpszReturnBuffer,
             int nSize, string lpFileName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault,
-            [In][Out] char[] lpReturnedString, int nSize, string lpFileName);
+            [In] [Out] char[] lpReturnedString, int nSize, string lpFileName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern long WritePrivateProfileString(string name, string key, string val, string filePath);
 
         /// <summary>
-        /// Retrieves all section names in the specified INI file.
+        ///     Retrieves all section names in the specified INI file.
         /// </summary>
         /// <param name="fileName">Path to the INI file.</param>
         /// <returns>An IEnumerable of section names.</returns>
         public static IEnumerable<string> GetSectionNames(string fileName)
         {
-            const int bufferSize = 32 * 1024;
+            var fileInfo = new FileInfo(fileName);
+            var fileSize = fileInfo.Length;
+            const int defaultBufferSize = 32 * 1024;
 
-            // MSDN specifies maximum of 32 KB
+            // Ensure buffer size is at least the size of the file or the default size, whichever is larger
+            var bufferSize = (int)Math.Max(fileSize, defaultBufferSize);
+
             var buffer = new char[bufferSize];
 
             var length = GetPrivateProfileSectionNames(buffer, bufferSize, fileName);
@@ -46,16 +51,20 @@ namespace WireSockUI.Native
         }
 
         /// <summary>
-        /// Retrieves all keys and their values in a section from the specified INI file.
+        ///     Retrieves all keys and their values in a section from the specified INI file.
         /// </summary>
         /// <param name="fileName">Path to the INI file.</param>
         /// <param name="sectionName">The name of the section to look up.</param>
         /// <returns>A dictionary containing keys and their values in the specified section.</returns>
         public static Dictionary<string, string> GetSection(string fileName, string sectionName)
         {
-            const int bufferSize = 32 * 1024;
+            var fileInfo = new FileInfo(fileName);
+            var fileSize = fileInfo.Length;
+            const int defaultBufferSize = 32 * 1024;
 
-            // MSDN specifies maximum of 32 KB
+            // Ensure buffer size is at least the size of the file or the default size, whichever is larger
+            var bufferSize = (int)Math.Max(fileSize, defaultBufferSize);
+
             var buffer = new char[bufferSize];
 
             var length = GetPrivateProfileSection(sectionName, buffer, bufferSize, fileName);
@@ -70,17 +79,14 @@ namespace WireSockUI.Native
             foreach (var entry in value.Trim('\0').Split('\0'))
             {
                 var index = entry.IndexOf('=');
-                if (index > -1)
-                {
-                    section.Add(entry.Substring(0, index), entry.Substring(index + 1));
-                }
+                if (index > -1) section.Add(entry.Substring(0, index), entry.Substring(index + 1));
             }
 
             return section;
         }
 
         /// <summary>
-        /// Reads a string value associated with the specified key in the given section of the INI file.
+        ///     Reads a string value associated with the specified key in the given section of the INI file.
         /// </summary>
         /// <param name="fileName">The path to the INI file.</param>
         /// <param name="sectionName">The name of the section to look up.</param>

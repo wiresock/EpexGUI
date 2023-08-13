@@ -336,7 +336,7 @@ namespace WireSockUI.Config
                 ((x.N2 & x.N4 & x.N6 & x.N8) == P26) || x.N9 > P25;
         }
 
-        /* Convert from internal format to little-endian byte format.  The 
+        /* Convert from internal format to little-endian byte format.  The
          * number must be in a reduced form which is output by the following ops:
          *     unpack, mul, sqr
          *     set --  if input in range 0 .. P25
@@ -423,8 +423,8 @@ namespace WireSockUI.Config
             numOut.N9 = 0;
         }
 
-        /* Add/subtract two numbers.  The inputs must be in reduced form, and the 
-         * output isn't, so to do another addition or subtraction on the output, 
+        /* Add/subtract two numbers.  The inputs must be in reduced form, and the
+         * output isn't, so to do another addition or subtraction on the output,
          * first multiply it by one to reduce it. */
         private static void Add(Long10 xy, Long10 x, Long10 y)
         {
@@ -652,7 +652,7 @@ namespace WireSockUI.Config
             Multiply(t0, t2, t1); /* 11 == 9 + 2	*/
             Square(t1, t0); /* 22 == 2 * 11	*/
             Multiply(t3, t1, t2); /* 31 == 22 + 9
-					== 2^5   - 2^0	*/
+                    == 2^5   - 2^0	*/
             Square(t1, t3); /* 2^6   - 2^1	*/
             Square(t2, t1); /* 2^7   - 2^2	*/
             Square(t1, t2); /* 2^8   - 2^3	*/
@@ -847,23 +847,23 @@ namespace WireSockUI.Config
             Set(z[1], 1);
 
             for (var i = 32; i-- != 0;)
-                for (var j = 8; j-- != 0;)
-                {
-                    /* swap arguments depending on bit */
-                    var bit1 = ((privateKey[i] & 0xFF) >> j) & 1;
-                    var bit0 = (~(privateKey[i] & 0xFF) >> j) & 1;
-                    var ax = x[bit0];
-                    var az = z[bit0];
-                    var bx = x[bit1];
-                    var bz = z[bit1];
+            for (var j = 8; j-- != 0;)
+            {
+                /* swap arguments depending on bit */
+                var bit1 = ((privateKey[i] & 0xFF) >> j) & 1;
+                var bit0 = (~(privateKey[i] & 0xFF) >> j) & 1;
+                var ax = x[bit0];
+                var az = z[bit0];
+                var bx = x[bit1];
+                var bz = z[bit1];
 
-                    /* a' = a + b	*/
-                    /* b' = 2 b	*/
-                    MontyPrepare(t1, t2, ax, az);
-                    MontyPrepare(t3, t4, bx, bz);
-                    MontyAdd(t1, t2, t3, t4, ax, az, dx);
-                    MontyDouble(t1, t2, t3, t4, bx, bz);
-                }
+                /* a' = a + b	*/
+                /* b' = 2 b	*/
+                MontyPrepare(t1, t2, ax, az);
+                MontyPrepare(t3, t4, bx, bz);
+                MontyAdd(t1, t2, t3, t4, ax, az, dx);
+                MontyDouble(t1, t2, t3, t4, bx, bz);
+            }
 
             Reciprocal(t1, z[0], false);
             Multiply(dx, x[0], t1);

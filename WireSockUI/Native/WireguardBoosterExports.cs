@@ -113,6 +113,8 @@ namespace WireSockUI.Native
             [MarshalAs(UnmanagedType.LPStr)] public string private_key; // required
             [MarshalAs(UnmanagedType.LPStr)] public string address; // required
             [MarshalAs(UnmanagedType.LPStr)] public string dns; // optional
+            [MarshalAs(UnmanagedType.LPStr)] public string mtu; // optional
+            [MarshalAs(UnmanagedType.LPStr)] public string listen_port; // optional
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]

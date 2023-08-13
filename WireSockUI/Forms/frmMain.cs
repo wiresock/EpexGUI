@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -28,12 +29,12 @@ namespace WireSockUI.Forms
         private readonly BackgroundWorker _tunnelConnectionWorker;
         private readonly BackgroundWorker _tunnelStateWorker;
 
-        private ConnectionState _currentState = ConnectionState.Disconnected;
-
         /**
          * @brief The manager that handles the Wireguard connections.
          */
         private readonly WireSockManager _wiresock;
+
+        private ConnectionState _currentState = ConnectionState.Disconnected;
 
         /**
          * @brief Initializes a new instance of the Main class.
@@ -359,7 +360,7 @@ namespace WireSockUI.Forms
         }
 
         /// <summary>
-        /// Handles the form show event.
+        ///     Handles the form show event.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
@@ -462,9 +463,9 @@ namespace WireSockUI.Forms
         }
 
         /// <summary>
-        /// Handles the profile click event for a given sender and event arguments.
-        /// This function is responsible for updating the connection state and tunnel mode,
-        /// connecting or reconnecting to a profile depending on the button's text and the current state.
+        ///     Handles the profile click event for a given sender and event arguments.
+        ///     This function is responsible for updating the connection state and tunnel mode,
+        ///     connecting or reconnecting to a profile depending on the button's text and the current state.
         /// </summary>
         /// <param name="sender">The source of the event. In this case, a Button control.</param>
         /// <param name="e">The event arguments containing information about the event.</param>
@@ -549,6 +550,122 @@ namespace WireSockUI.Forms
 
         private void OnProfileChange(object sender, ListViewItemSelectionChangedEventArgs e)
         {
+            gbxInterface.Visible = false;
+            gbxInterface.Text = string.Empty;
+            layoutInterface.Controls.Clear();
+            layoutInterface.RowStyles.Clear();
+
+            gbxPeer.Visible = false;
+            layoutPeer.Controls.Clear();
+            layoutPeer.RowStyles.Clear();
+
+            gbxState.Visible = false;
+            layoutState.Controls.Clear();
+            layoutState.RowStyles.Clear();
+
+            if (e.IsSelected)
+            {
+                var selectedConf = lstProfiles.SelectedItems[0].Text;
+
+                try
+                {
+                    var profile = Profile.LoadProfile(selectedConf);
+
+                    // Interface Panel
+                    gbxInterface.Text = string.Format(Resources.InterfaceTitle, selectedConf);
+
+                    AddRow(layoutInterface, "Status", Resources.InterfaceStatus, Resources.InterfaceStatusInactive,
+                        false, BitmapExtensions.DrawCircle(16, 15, Brushes.DarkGray));
+                    AddRow(layoutInterface, "PrivateKey", Resources.InterfacePublicKey, profile.PublicKey);
+                    AddRow(layoutInterface, "MTU", Resources.InterfaceMTU, profile.Mtu, true);
+                    AddRow(layoutInterface, "ListenPort", Resources.InterfaceListenPort, profile.ListenPort, true);
+                    AddRow(layoutInterface, "Addresses", Resources.InterfaceAddresses, profile.Address);
+
+                    layoutInterface.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
+                    layoutInterface.RowStyles.Add(new RowStyle(SizeType.Absolute, 35));
+                    layoutInterface.RowCount = layoutInterface.RowStyles.Count;
+
+                    var btnActivate = new Button
+                    {
+                        AutoSize = true,
+                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                        Dock = DockStyle.Left,
+                        Name = "btnActivate",
+                        Text = "Activate"
+                    };
+
+                    btnActivate.Click += OnProfileClick;
+
+                    layoutInterface.Controls.Add(btnActivate, 1, layoutInterface.RowCount - 1);
+
+                    layoutInterface.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                    gbxInterface.Visible = true;
+
+                    OnLayoutPanelResize(layoutInterface, EventArgs.Empty);
+
+                    // Peer Panel
+                    AddRow(layoutPeer, "PublicKey", Resources.PeerPublicKey, profile.PeerKey);
+                    AddRow(layoutPeer, "PresharedKey", Resources.PeerPresharedKey,
+                        !string.IsNullOrWhiteSpace(profile.PresharedKey)
+                            ? Resources.PeerPresharedKeyValue
+                            : string.Empty, true);
+                    AddRow(layoutPeer, "AllowedIPs", Resources.PeerAllowedIPs, TruncateLongString(profile.AllowedIPs));
+                    AddRow(layoutPeer, "Endpoint", Resources.PeerEndpoint, profile.Endpoint);
+                    AddRow(layoutPeer, "PersistentKeepAlive", Resources.PeerPersistentKeepAlive,
+                        profile.PersistentKeepAlive, true);
+
+                    layoutPeer.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+
+                    AddRow(layoutPeer, "AllowedApps", Resources.PeerAllowedApps, profile.AllowedApps, true);
+                    AddRow(layoutPeer, "DisallowedApps", Resources.PeerDisallowedApps, profile.DisallowedApps, true);
+                    AddRow(layoutPeer, "DisallowedIPs", Resources.PeerDisallowedIPs,
+                        TruncateLongString(profile.DisallowedIPs), true);
+                    AddRow(layoutPeer, "Socks5Proxy", Resources.PeerSocks5Proxy, profile.Socks5Proxy, true);
+                    AddRow(layoutPeer, "Socks5Username", Resources.PeerSocks5Username, profile.Socks5ProxyUsername,
+                        true);
+                    AddRow(layoutPeer, "Socks5Password", Resources.PeerSocks5Password,
+                        !string.IsNullOrWhiteSpace(profile.Socks5ProxyPassword)
+                            ? Resources.PeerSocks5PasswordValue
+                            : string.Empty, true);
+
+                    if (!string.IsNullOrWhiteSpace(profile.AllowedApps) ||
+                        !string.IsNullOrWhiteSpace(profile.DisallowedApps) ||
+                        !string.IsNullOrWhiteSpace(profile.DisallowedIPs) ||
+                        !string.IsNullOrWhiteSpace(profile.Socks5Proxy))
+                        layoutPeer.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+
+                    layoutPeer.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                    gbxPeer.Visible = true;
+
+                    OnLayoutPanelResize(layoutPeer, EventArgs.Empty);
+
+                    // Layout state                    
+                    AddRow(layoutState, "Handshake", Resources.StateHandshake, "");
+                    AddRow(layoutState, "Transfer", Resources.StateTransfer, "");
+                    AddRow(layoutState, "RTT", Resources.StateRTT, "");
+                    AddRow(layoutState, "Loss", Resources.StateLoss, "");
+
+                    layoutState.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+                    // Only 1 profile can be active at a time, either show the active state or do not allow to activate
+                    if (_wiresock.Connected)
+                    {
+                        if (_wiresock.ProfileName == selectedConf)
+                            UpdateState(ConnectionState.Connected, false);
+                        else
+                            btnActivate.Enabled = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, Resources.ProfileError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            mniDeleteTunnel.Enabled = e.IsSelected;
+            btnEdit.Enabled = e.IsSelected;
+            return;
+
             TextBox AddRow(TableLayoutPanel container, string name, string key, string value, bool isOptional = false,
                 Bitmap icon = null)
             {
@@ -636,118 +753,27 @@ namespace WireSockUI.Forms
                 return null;
             }
 
-            gbxInterface.Visible = false;
-            gbxInterface.Text = string.Empty;
-            layoutInterface.Controls.Clear();
-            layoutInterface.RowStyles.Clear();
-
-            gbxPeer.Visible = false;
-            layoutPeer.Controls.Clear();
-            layoutPeer.RowStyles.Clear();
-
-            gbxState.Visible = false;
-            layoutState.Controls.Clear();
-            layoutState.RowStyles.Clear();
-
-            if (e.IsSelected)
+            // Helper function to truncate long strings
+            string TruncateLongString(string input)
             {
-                var selectedConf = lstProfiles.SelectedItems[0].Text;
+                if (input == null)
+                    return null;
 
-                try
+                var values = input.Split(',');
+                var groupedValues = new List<string>();
+
+                for (var i = 0; i < values.Length && i < 20; i += 2)
                 {
-                    var profile = Profile.LoadProfile(selectedConf);
-
-                    // Interface Panel
-                    gbxInterface.Text = string.Format(Resources.InterfaceTitle, selectedConf);
-
-                    AddRow(layoutInterface, "Status", Resources.InterfaceStatus, Resources.InterfaceStatusInactive,
-                        false, BitmapExtensions.DrawCircle(16, 15, Brushes.DarkGray));
-                    AddRow(layoutInterface, "PrivateKey", Resources.InterfacePublicKey, profile.PublicKey);
-                    AddRow(layoutInterface, "MTU", Resources.InterfaceMTU, profile.Mtu, true);
-                    AddRow(layoutInterface, "Addresses", Resources.InterfaceAddresses, profile.Address);
-
-                    layoutInterface.RowStyles.Add(new RowStyle(SizeType.Absolute, 10));
-                    layoutInterface.RowStyles.Add(new RowStyle(SizeType.Absolute, 35));
-                    layoutInterface.RowCount = layoutInterface.RowStyles.Count;
-
-                    var btnActivate = new Button
-                    {
-                        AutoSize = true,
-                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        Dock = DockStyle.Left,
-                        Name = "btnActivate",
-                        Text = "Activate"
-                    };
-
-                    btnActivate.Click += OnProfileClick;
-
-                    layoutInterface.Controls.Add(btnActivate, 1, layoutInterface.RowCount - 1);
-
-                    layoutInterface.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-                    gbxInterface.Visible = true;
-
-                    OnLayoutPanelResize(layoutInterface, EventArgs.Empty);
-
-                    // Peer Panel
-                    AddRow(layoutPeer, "PublicKey", Resources.PeerPublicKey, profile.PeerKey);
-                    AddRow(layoutPeer, "PresharedKey", Resources.PeerPresharedKey,
-                        !string.IsNullOrWhiteSpace(profile.PresharedKey)
-                            ? Resources.PeerPresharedKeyValue
-                            : string.Empty, true);
-                    AddRow(layoutPeer, "AllowedIPs", Resources.PeerAllowedIPs, profile.AllowedIPs);
-                    AddRow(layoutPeer, "Endpoint", Resources.PeerEndpoint, profile.Endpoint);
-                    AddRow(layoutPeer, "PersistentKeepAlive", Resources.PeerPersistentKeepAlive,
-                        profile.PersistentKeepAlive, true);
-
-                    layoutPeer.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
-
-                    AddRow(layoutPeer, "AllowedApps", Resources.PeerAllowedApps, profile.AllowedApps, true);
-                    AddRow(layoutPeer, "DisallowedApps", Resources.PeerDisallowedApps, profile.DisallowedApps, true);
-                    AddRow(layoutPeer, "DisallowedIPs", Resources.PeerDisallowedIPs, profile.DisallowedIPs, true);
-                    AddRow(layoutPeer, "Socks5Proxy", Resources.PeerSocks5Proxy, profile.Socks5Proxy, true);
-                    AddRow(layoutPeer, "Socks5Username", Resources.PeerSocks5Username, profile.Socks5ProxyUsername,
-                        true);
-                    AddRow(layoutPeer, "Socks5Password", Resources.PeerSocks5Password,
-                        !string.IsNullOrWhiteSpace(profile.Socks5ProxyPassword)
-                            ? Resources.PeerSocks5PasswordValue
-                            : string.Empty, true);
-
-                    if (!string.IsNullOrWhiteSpace(profile.AllowedApps) ||
-                        !string.IsNullOrWhiteSpace(profile.DisallowedApps) ||
-                        !string.IsNullOrWhiteSpace(profile.DisallowedIPs) ||
-                        !string.IsNullOrWhiteSpace(profile.Socks5Proxy))
-                        layoutPeer.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
-
-                    layoutPeer.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-                    gbxPeer.Visible = true;
-
-                    OnLayoutPanelResize(layoutPeer, EventArgs.Empty);
-
-                    // Layout state                    
-                    AddRow(layoutState, "Handshake", Resources.StateHandshake, "");
-                    AddRow(layoutState, "Transfer", Resources.StateTransfer, "");
-                    AddRow(layoutState, "RTT", Resources.StateRTT, "");
-                    AddRow(layoutState, "Loss", Resources.StateLoss, "");
-
-                    layoutState.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
-                    // Only 1 profile can be active at a time, either show the active state or do not allow to activate
-                    if (_wiresock.Connected)
-                    {
-                        if (_wiresock.ProfileName == selectedConf)
-                            UpdateState(ConnectionState.Connected, false);
-                        else
-                            btnActivate.Enabled = false;
-                    }
+                    var group = values.Skip(i).Take(2);
+                    groupedValues.Add(string.Join(",", group));
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, Resources.ProfileError, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+
+                var result = string.Join("\n", groupedValues);
+
+                if (values.Length > 20) result += "...";
+
+                return result;
             }
-
-            mniDeleteTunnel.Enabled = e.IsSelected;
-            btnEdit.Enabled = e.IsSelected;
         }
 
         private void OnLayoutPanelResize(object sender, EventArgs e)

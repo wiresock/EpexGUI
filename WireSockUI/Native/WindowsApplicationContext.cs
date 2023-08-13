@@ -38,11 +38,11 @@ namespace WireSockUI.Native
             SetCurrentProcessExplicitAppUserModelID(aumid);
 
             using (var shortcut = new ShellLink
-            {
-                TargetPath = mainModule.FileName,
-                Arguments = string.Empty,
-                AppUserModelId = aumid
-            })
+                   {
+                       TargetPath = mainModule.FileName,
+                       Arguments = string.Empty,
+                       AppUserModelId = aumid
+                   })
             {
                 var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 var startMenuPath = Path.Combine(appData, @"Microsoft\Windows\Start Menu\Programs");

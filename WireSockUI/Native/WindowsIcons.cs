@@ -50,11 +50,18 @@ namespace WireSockUI.Native
         private static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string lpFileName);
 
         /// <summary>
-        /// Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count. 
-        /// When the reference count reaches zero, the module is unloaded from the address space of the calling process and the handle is no longer valid.
+        ///     Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count.
+        ///     When the reference count reaches zero, the module is unloaded from the address space of the calling process and the
+        ///     handle is no longer valid.
         /// </summary>
-        /// <param name="hModule">A handle to the loaded library module. The LoadLibrary or GetModuleHandle function returns this handle.</param>
-        /// <returns>If the function succeeds, the return value is nonzero; otherwise, it is zero. To get extended error information, call GetLastError.</returns>
+        /// <param name="hModule">
+        ///     A handle to the loaded library module. The LoadLibrary or GetModuleHandle function returns this
+        ///     handle.
+        /// </param>
+        /// <returns>
+        ///     If the function succeeds, the return value is nonzero; otherwise, it is zero. To get extended error
+        ///     information, call GetLastError.
+        /// </returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool FreeLibrary(IntPtr hModule);
 
@@ -80,7 +87,7 @@ namespace WireSockUI.Native
         private static extern uint SizeofResource(IntPtr hModule, IntPtr hResInfo);
 
         /// <summary>
-        /// Retrieves an icon from the specified file and group ID.
+        ///     Retrieves an icon from the specified file and group ID.
         /// </summary>
         /// <param name="file">The file containing the icon resource.</param>
         /// <param name="groupId">The group ID of the icon resource.</param>

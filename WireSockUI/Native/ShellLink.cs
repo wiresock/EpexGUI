@@ -23,23 +23,23 @@ namespace WireSockUI.Native
         [Guid("000214F9-0000-0000-C000-000000000046")]
         private interface IShellLinkW
         {
-            uint GetPath([Out][MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile,
+            uint GetPath([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile,
                 int cchMaxPath, ref Win32FindDataw pfd, uint fFlags);
 
             uint GetIDList(out IntPtr ppidl);
             uint SetIDList(IntPtr pidl);
 
-            uint GetDescription([Out][MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName,
+            uint GetDescription([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName,
                 int cchMaxName);
 
             uint SetDescription([MarshalAs(UnmanagedType.LPWStr)] string pszName);
 
-            uint GetWorkingDirectory([Out][MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir,
+            uint GetWorkingDirectory([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir,
                 int cchMaxPath);
 
             uint SetWorkingDirectory([MarshalAs(UnmanagedType.LPWStr)] string pszDir);
 
-            uint GetArguments([Out][MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs,
+            uint GetArguments([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs,
                 int cchMaxPath);
 
             uint SetArguments([MarshalAs(UnmanagedType.LPWStr)] string pszArgs);
@@ -48,7 +48,7 @@ namespace WireSockUI.Native
             uint GetShowCmd(out int piShowCmd);
             uint SetShowCmd(int iShowCmd);
 
-            uint GetIconLocation([Out][MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath,
+            uint GetIconLocation([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath,
                 int cchIconPath, out int piIcon);
 
             uint SetIconLocation([MarshalAs(UnmanagedType.LPWStr)] string pszIconPath, int iIcon);
@@ -210,7 +210,7 @@ namespace WireSockUI.Native
         }
 
         [DllImport("Ole32.dll", PreserveSig = false)]
-        private static extern void PropVariantClear([In][Out] PropVariant pvar);
+        private static extern void PropVariantClear([In] [Out] PropVariant pvar);
 
         #endregion
 

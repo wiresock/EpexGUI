@@ -226,6 +226,9 @@
   <data name="InterfaceMTU" xml:space="preserve">
     <value>MTU</value>
   </data>
+  <data name="InterfaceListenPort" xml:space="preserve">
+    <value>ListenPort</value>
+  </data>
   <data name="InterfacePublicKey" xml:space="preserve">
     <value>Public key</value>
   </data>
