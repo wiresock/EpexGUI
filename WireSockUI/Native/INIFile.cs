@@ -63,10 +63,18 @@ namespace WireSockUI.Native
             var section = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             if (length == bufferSize - 2) return section;
-            var value = new string(buffer, 0, (int)length);
+
+            // Convert buffer to string and transform multiple lines into a single line
+            var value = new string(buffer, 0, (int)length).Replace("\r\n", "").Replace("\n", "");
 
             foreach (var entry in value.Trim('\0').Split('\0'))
-                section.Add(entry.Substring(0, entry.IndexOf('=')), entry.Substring(entry.IndexOf('=') + 1));
+            {
+                var index = entry.IndexOf('=');
+                if (index > -1)
+                {
+                    section.Add(entry.Substring(0, index), entry.Substring(index + 1));
+                }
+            }
 
             return section;
         }
