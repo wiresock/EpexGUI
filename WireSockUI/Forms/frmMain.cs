@@ -285,10 +285,6 @@ namespace WireSockUI.Forms
 
                     if (!_tunnelStateWorker.IsBusy)
                         _tunnelStateWorker.RunWorkerAsync();
-
-                    if (notify)
-                        Notifications.Notifications.Notify(Resources.ToastActiveTitle,
-                            string.Format(Resources.ToastActiveMessage, _wiresock.ProfileName));
                     break;
                 case ConnectionState.Disconnected:
                     btnActivate.Text = Resources.ButtonInactive;
@@ -317,10 +313,6 @@ namespace WireSockUI.Forms
 
                     gbxState.Visible = false;
                     _tunnelStateWorker.CancelAsync();
-
-                    if (notify)
-                        Notifications.Notifications.Notify(Resources.ToastInactiveTitle,
-                            string.Format(Resources.ToastInactiveMessage, _wiresock.ProfileName));
 
                     _wiresock.Disconnect();
                     break;

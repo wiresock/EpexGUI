@@ -92,14 +92,10 @@
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.InteropServices.WindowsRuntime" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="Windows.Data" />
-    <Reference Include="Windows.Foundation" />
-    <Reference Include="Windows.UI" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\Curve25519.cs" />
     <Compile Include="Extensions\BitmapExtensions.cs" />
-    <Compile Include="Extensions\GitHubExtensions.cs" />
     <Compile Include="Extensions\MenuTextExtender.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -133,7 +129,6 @@
     <Compile Include="Config\Profile.cs" />
     <Compile Include="Native\ProcessEntry.cs" />
     <Compile Include="Native\WindowsApplicationContext.cs" />
-    <Compile Include="Notifications\Notifications.cs" />
     <Compile Include="Native\ProcessList.cs" />
     <Compile Include="Native\CommonControlExtensions.cs" />
     <Compile Include="Native\WindowsIcons.cs" />

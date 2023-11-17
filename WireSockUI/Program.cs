@@ -38,8 +38,6 @@ namespace WireSockUI
                 Environment.Exit(1);
             }
 
-            CheckVersion();
-
             Application.Run(new FrmMain());
         }
 
@@ -67,36 +65,6 @@ namespace WireSockUI
                     return metadata.Value;
 
             return null;
-        }
-
-        /// <summary>
-        ///     Compare the local product version against the latest GitHub repository release tag
-        /// </summary>
-        /// <remarks>If auto update is enabled, repository is known and there is a new version, open up a browser window.</remarks>
-        private static void CheckVersion()
-        {
-            if (!Settings.Default.AutoUpdate) return;
-
-            try
-            {
-                var repository = GetRepository();
-
-                if (!string.IsNullOrWhiteSpace(repository))
-                {
-                    var currentVersion = new Version(Application.ProductVersion);
-                    var latestVersion = GitHubExtensions.GetLatestRelease(repository);
-
-                    if (currentVersion != null && latestVersion != null && latestVersion > currentVersion)
-                    {
-                        MessageBox.Show(Resources.AppUpdateMessage, Resources.AppUpdateTitle, MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                        OpenBrowser($"https://github.com/{repository}/releases");
-                    }
-                }
-            }
-            catch
-            {
-            }
         }
 
         /// <summary>
