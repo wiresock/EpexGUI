@@ -34,7 +34,8 @@ You can use the `Process` button on the edit screen, to easily select a process 
 
 Additionally WireSockUI supports a number of settings to allow it to start-up with Windows, automatically re-connect to your last active tunnel or minimize to system tray on startup. You can also open the folder where WireSockUI saves the profile configurations from here.
 
-![settings](https://user-images.githubusercontent.com/6480052/230771932-11df9a15-df61-4657-bbf3-e8dbbdac6716.png)
+![settings](https://github.com/wiresock/WireSockUI/assets/20592735/5e389ab5-4e80-42f3-8b4d-1f92285f69c2)
+
 
 ------
 
