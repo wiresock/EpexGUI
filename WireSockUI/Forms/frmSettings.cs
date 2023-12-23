@@ -23,7 +23,7 @@ namespace WireSockUI.Forms
             chkAutoConnect.Checked = Settings.Default.AutoConnect;
             chkAutoUpdate.Checked = Settings.Default.AutoUpdate;
             chkUseAdapter.Checked = Settings.Default.UseAdapter;
-            chkNotify.Checked = Settings.Default.EnableNotifications;
+            //chkNotify.Checked = Settings.Default.EnableNotifications;
             chkDisableAutoAdmin.Checked = Settings.Default.DisableAutoAdmin;
             ddlLogLevel.SelectedItem = Settings.Default.LogLevel;
 
@@ -212,7 +212,7 @@ namespace WireSockUI.Forms
             Settings.Default.AutoMinimize = chkAutoMinimize.Checked;
             Settings.Default.AutoUpdate = chkAutoUpdate.Checked;
             Settings.Default.UseAdapter = chkUseAdapter.Checked;
-            Settings.Default.EnableNotifications = chkNotify.Checked;
+            //Settings.Default.EnableNotifications = chkNotify.Checked;
             Settings.Default.DisableAutoAdmin = chkDisableAutoAdmin.Checked;
             Settings.Default.LogLevel = ddlLogLevel.SelectedItem as string;
 

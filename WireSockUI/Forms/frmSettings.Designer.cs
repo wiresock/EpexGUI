@@ -147,8 +147,7 @@
             // chkNotify
             // 
             this.chkNotify.AutoSize = true;
-            this.chkNotify.Checked = true;
-            this.chkNotify.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkNotify.Enabled = false;
             this.chkNotify.Location = new System.Drawing.Point(12, 142);
             this.chkNotify.Name = "chkNotify";
             this.resControls.SetResourceKey(this.chkNotify, null);
