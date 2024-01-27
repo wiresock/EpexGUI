@@ -137,7 +137,7 @@ namespace WireSockUI.Config
             get => _address;
             set
             {
-                ValidateAddresses("Interface", "Address", value, IpHelper.IsValidCidr);
+                ValidateAddresses("Interface", "Address", value, IpHelper.IsValidSubnetOrSingleIpAddress);
                 _address = value;
             }
         }
