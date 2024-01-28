@@ -62,12 +62,12 @@ namespace WireSockUI.Native
         }
 
         /// <summary>
-        /// Determines if the given string is a valid IP address or a valid CIDR notation.
+        ///     Determines if the given string is a valid IP address or a valid CIDR notation.
         /// </summary>
         /// <param name="interfaceAddress">The interface address string to validate.</param>
         /// <returns><c>true</c> if the input string is a valid IP address or a valid CIDR notation, otherwise <c>false</c>.</returns>
         /// <remarks>
-        /// This method uses the IsValidIpAddress and IsValidCidr methods to validate the input string.
+        ///     This method uses the IsValidIpAddress and IsValidCidr methods to validate the input string.
         /// </remarks>
         public static bool IsValidSubnetOrSingleIpAddress(string interfaceAddress)
         {

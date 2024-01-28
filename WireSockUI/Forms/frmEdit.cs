@@ -194,7 +194,8 @@ namespace WireSockUI.Forms
                         case "disallowedips":
                         {
                             foreach (Match e in MultiValueMatch.Matches(value))
-                                if (!string.IsNullOrWhiteSpace(e.Value) && !IpHelper.IsValidSubnetOrSingleIpAddress(e.Value))
+                                if (!string.IsNullOrWhiteSpace(e.Value) &&
+                                    !IpHelper.IsValidSubnetOrSingleIpAddress(e.Value))
                                 {
                                     txtEditor.SelectionStart = m.Groups["value"].Index + e.Index;
                                     txtEditor.SelectionLength = e.Length;

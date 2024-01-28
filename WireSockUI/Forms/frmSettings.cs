@@ -33,7 +33,8 @@ namespace WireSockUI.Forms
                 chkUseAdapter.Checked = false;
             }
 
-            chkAutorun.Checked = IsCurrentProcessElevated() ? IsAutoRunEnabled() : IsAutoRunForNonAdminEnabled();
+            chkAutorun.Checked =
+                IsCurrentProcessElevated() ? IsAutoRunForAdminEnabled() : IsAutoRunForNonAdminEnabled();
             Settings.Default.AutoRun = chkAutorun.Checked;
         }
 
@@ -56,7 +57,17 @@ namespace WireSockUI.Forms
             return Assembly.GetExecutingAssembly().GetName().Name;
         }
 
-        private static bool IsAutoRunEnabled()
+        /// <summary>
+        ///     Checks if the auto-run feature is enabled for the current application.
+        /// </summary>
+        /// <returns>
+        ///     Returns true if the auto-run feature is enabled, otherwise false.
+        /// </returns>
+        /// <remarks>
+        ///     This method uses the TaskService to find a task with the same name as the current application.
+        ///     If such a task is found, it means that the auto-run feature is enabled.
+        /// </remarks>
+        private static bool IsAutoRunForAdminEnabled()
         {
             using (var ts = new TaskService())
             {
@@ -64,24 +75,45 @@ namespace WireSockUI.Forms
             }
         }
 
+        /// <summary>
+        ///     Checks if the auto-run feature is enabled for the current application for non-admin users.
+        /// </summary>
+        /// <returns>
+        ///     Returns true if the auto-run feature is enabled, otherwise false.
+        /// </returns>
+        /// <remarks>
+        ///     This method checks if a shortcut to the application exists in the Startup folder.
+        ///     If such a shortcut is found, it means that the auto-run feature is enabled for non-admin users.
+        /// </remarks>
         private static bool IsAutoRunForNonAdminEnabled()
         {
             try
             {
                 var startupFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-                var shortcutPath = Path.Combine(startupFolderPath, GetAppName() + ".lnk");
+                var shortcutPath = Path.Combine(startupFolderPath, $"{GetAppName()}.lnk");
 
                 return File.Exists(shortcutPath);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error checking auto-run status: " + ex.Message, "Error", MessageBoxButtons.OK,
+                MessageBox.Show($"Error checking auto-run status: {ex.Message}", "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return false;
             }
         }
 
-        private static void EnableAutoRun()
+        /// <summary>
+        ///     Enables the auto-run feature for the current application with administrative privileges.
+        /// </summary>
+        /// <remarks>
+        ///     This method creates a new task in the Task Scheduler with the same name as the current application.
+        ///     The task is configured to run with the highest privileges and to trigger on logon.
+        ///     The task action is set to the path of the current executable.
+        ///     The task is also configured to run even if the computer is running on batteries, to not stop if the computer
+        ///     switches to battery power, to wake the computer if needed, and to not stop when the computer ceases to be idle.
+        ///     If an error occurs while enabling auto-run, an error message is displayed.
+        /// </remarks>
+        private static void EnableAutoRunForAdmin()
         {
             try
             {
@@ -116,7 +148,15 @@ namespace WireSockUI.Forms
             }
         }
 
-        private static void DisableAutoRun()
+        /// <summary>
+        ///     Disables the auto-run feature for the current application with administrative privileges.
+        /// </summary>
+        /// <remarks>
+        ///     This method uses the TaskService to delete a task with the same name as the current application.
+        ///     If such a task is found and deleted, it means that the auto-run feature is disabled.
+        ///     If an error occurs while disabling auto-run, an error message is displayed.
+        /// </remarks>
+        private static void DisableAutoRunForAdmin()
         {
             try
             {
@@ -127,11 +167,20 @@ namespace WireSockUI.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error disabling autorun: " + ex.Message, "Error", MessageBoxButtons.OK,
+                MessageBox.Show($"Error disabling autorun: {ex.Message}", "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
         }
 
+        /// <summary>
+        ///     Enables the auto-run feature for the current application for non-admin users.
+        /// </summary>
+        /// <remarks>
+        ///     This method creates a shortcut to the application in the Startup folder.
+        ///     The shortcut is created using the ShellLink class and is saved to the Startup folder.
+        ///     If the shortcut is created successfully, a success message is displayed.
+        ///     If an error occurs while enabling auto-run, an error message is displayed.
+        /// </remarks>
         private static void EnableAutoRunForNonAdmin()
         {
             try
@@ -150,16 +199,25 @@ namespace WireSockUI.Forms
                     link.Save(shortcutPath);
                 }
 
-                MessageBox.Show("Auto-run enabled successfully.", "Success", MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                //MessageBox.Show("Auto-run enabled successfully.", "Success", MessageBoxButtons.OK,
+                //    MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error enabling auto-run: " + ex.Message, "Error", MessageBoxButtons.OK,
+                MessageBox.Show($"Error enabling auto-run: {ex.Message}", "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
         }
 
+        /// <summary>
+        ///     Disables the auto-run feature for the current application for non-admin users.
+        /// </summary>
+        /// <remarks>
+        ///     This method deletes the shortcut to the application in the Startup folder.
+        ///     If the shortcut is found and deleted, it means that the auto-run feature is disabled for non-admin users.
+        ///     If the shortcut is not found, an info message is displayed.
+        ///     If an error occurs while disabling auto-run, an error message is displayed.
+        /// </remarks>
         private static void DisableAutoRunForNonAdmin()
         {
             try
@@ -167,21 +225,18 @@ namespace WireSockUI.Forms
                 var startupFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
                 var shortcutPath = Path.Combine(startupFolderPath, GetAppName() + ".lnk");
 
-                if (File.Exists(shortcutPath))
-                {
-                    File.Delete(shortcutPath);
-                    MessageBox.Show("Auto-run disabled successfully.", "Success", MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Auto-run shortcut not found.", "Info", MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                }
+                if (File.Exists(shortcutPath)) File.Delete(shortcutPath);
+                //MessageBox.Show("Auto-run disabled successfully.", "Success", MessageBoxButtons.OK,
+                //    MessageBoxIcon.Information);
+                //else
+                //{
+                //    MessageBox.Show("Auto-run shortcut not found.", "Info", MessageBoxButtons.OK,
+                //        MessageBoxIcon.Information);
+                //}
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error disabling auto-run: " + ex.Message, "Error", MessageBoxButtons.OK,
+                MessageBox.Show($"Error disabling auto-run: {ex.Message}", "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
         }
@@ -193,16 +248,32 @@ namespace WireSockUI.Forms
                 if (!chkAutorun.Checked)
                 {
                     if (IsCurrentProcessElevated())
-                        DisableAutoRun();
+                    {
+                        DisableAutoRunForAdmin();
+
+                        // Under Administrator ensure that non-admin AutoRun is also disabled
+                        if (IsAutoRunForNonAdminEnabled())
+                            DisableAutoRunForNonAdmin();
+                    }
                     else
+                    {
                         DisableAutoRunForNonAdmin();
+                    }
                 }
                 else
                 {
                     if (IsCurrentProcessElevated())
-                        EnableAutoRun();
+                    {
+                        EnableAutoRunForAdmin();
+
+                        // Under Administrator ensure that non-admin AutoRun is disabled
+                        if (IsAutoRunForNonAdminEnabled())
+                            DisableAutoRunForNonAdmin();
+                    }
                     else
+                    {
                         EnableAutoRunForNonAdmin();
+                    }
                 }
 
                 Settings.Default.AutoRun = chkAutorun.Checked;
