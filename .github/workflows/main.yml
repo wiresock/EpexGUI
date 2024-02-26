@@ -13,13 +13,6 @@ jobs:
           - platform: 'AnyCPU'
             build_configuration: 'Release'
             uwp_suffix: ''
-          - platform: 'AnyCPU'
-            build_configuration: 'Release'
-            uwp_suffix: '-no-uwp'
-          - platform: 'ARM64'
-            build_configuration: 'Release'
-            uwp_suffix: ''
-            if_main: 'true'
     runs-on: windows-latest
     permissions:
       contents: write
