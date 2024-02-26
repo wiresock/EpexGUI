@@ -188,7 +188,7 @@ namespace WireSockUI.Forms
             // 
             // tabPageTunnels
             // 
-            this.tabPageTunnels.BackColor = System.Drawing.Color.Transparent;
+            this.tabPageTunnels.BackColor = System.Drawing.Color.ControlDarkDark;
             this.tabPageTunnels.Controls.Add(this.btnEdit);
             this.tabPageTunnels.Controls.Add(this.pnlLeft);
             this.tabPageTunnels.Controls.Add(this.pnlRight);
@@ -210,7 +210,9 @@ namespace WireSockUI.Forms
             this.btnEdit.Size = new System.Drawing.Size(64, 22);
             this.btnEdit.TabIndex = 16;
             this.btnEdit.Text = "Edit";
-            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.btnEdit.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.btnEdit.UseVisualStyleBackColor = false;
             this.btnEdit.Click += new System.EventHandler(this.OnEditProfileClick);
             // 
             // pnlLeft
@@ -253,6 +255,8 @@ namespace WireSockUI.Forms
             this.mniNewTunnel});
             this.ddmAddTunnel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ddmAddTunnel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ddmAddTunnel.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.ddmAddTunnel.ForeColor = Color.FromArgb(216, 255, 255, 255);
             this.ddmAddTunnel.Name = "ddmAddTunnel";
             this.resMenu.SetResourceKey(this.ddmAddTunnel, "MenuAddTunnel");
             this.ddmAddTunnel.Size = new System.Drawing.Size(84, 22);
@@ -290,6 +294,8 @@ namespace WireSockUI.Forms
             this.mniDeleteTunnel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mniDeleteTunnel.Enabled = false;
             this.mniDeleteTunnel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.mniDeleteTunnel.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.mniDeleteTunnel.ForeColor = Color.FromArgb(216, 255, 255, 255);
             this.mniDeleteTunnel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mniDeleteTunnel.Name = "mniDeleteTunnel";
             this.resMenu.SetResourceKey(this.mniDeleteTunnel, "MenuDeleteTunnel");
@@ -308,6 +314,8 @@ namespace WireSockUI.Forms
             this.mniSettings.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.mniSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mniSettings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.mniSettings.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.mniSettings.ForeColor = Color.FromArgb(216, 255, 255, 255);
             this.mniSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mniSettings.Name = "mniSettings";
             this.resMenu.SetResourceKey(this.mniSettings, "MenuSettings");
@@ -457,7 +465,9 @@ namespace WireSockUI.Forms
             this.tabPageLog.Size = new System.Drawing.Size(593, 469);
             this.tabPageLog.TabIndex = 1;
             this.tabPageLog.Text = "Log";
-            this.tabPageLog.UseVisualStyleBackColor = true;
+            this.tabPageLog.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.tabPageLog.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.tabPageLog.UseVisualStyleBackColor = false;
             // 
             // lstLog
             // 
@@ -503,7 +513,7 @@ namespace WireSockUI.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
+            this.BackColor = System.Drawing.SystemColors.DarkDark;
             this.ClientSize = new System.Drawing.Size(601, 495);
             this.Controls.Add(this.tabControl);
             this.MaximizeBox = false;
