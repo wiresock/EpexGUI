@@ -92,7 +92,7 @@
             // 
             // txtPublicKey
             // 
-            this.txtPublicKey.BackColor = System.Drawing.SystemColors.Control;
+            this.txtPublicKey.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.txtPublicKey.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtPublicKey.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtPublicKey.Location = new System.Drawing.Point(133, 24);
@@ -151,7 +151,9 @@
             this.btnProcessList.TabIndex = 2;
             this.btnProcessList.Text = "Processes...";
             this.btnProcessList.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnProcessList.UseVisualStyleBackColor = true;
+            this.btnProcessList.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.btnProcessList.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.btnProcessList.UseVisualStyleBackColor = false;
             this.btnProcessList.Click += new System.EventHandler(this.OnProcessClick);
             // 
             // btnSave
@@ -163,7 +165,9 @@
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 1;
             this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.btnSave.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.OnSaveClick);
             // 
             // btnCancel
@@ -175,7 +179,9 @@
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.btnCancel.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.btnCancel.UseVisualStyleBackColor = false;
             // 
             // txtEditor
             // 
