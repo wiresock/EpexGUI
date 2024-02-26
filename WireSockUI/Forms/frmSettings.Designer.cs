@@ -52,7 +52,9 @@
             this.chkAutorun.Size = new System.Drawing.Size(150, 17);
             this.chkAutorun.TabIndex = 0;
             this.chkAutorun.Text = "Run when Windows starts";
-            this.chkAutorun.UseVisualStyleBackColor = true;
+            this.chkAutorun.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.chkAutorun.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.chkAutorun.UseVisualStyleBackColor = false;
             // 
             // chkAutoMinimize
             // 
@@ -63,7 +65,9 @@
             this.chkAutoMinimize.Size = new System.Drawing.Size(136, 17);
             this.chkAutoMinimize.TabIndex = 1;
             this.chkAutoMinimize.Text = "Minimize to tray on start";
-            this.chkAutoMinimize.UseVisualStyleBackColor = true;
+            this.chkAutoMinimize.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.chkAutoMinimize.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.chkAutoMinimize.UseVisualStyleBackColor = false;
             // 
             // chkAutoConnect
             // 
@@ -74,7 +78,9 @@
             this.chkAutoConnect.Size = new System.Drawing.Size(168, 17);
             this.chkAutoConnect.TabIndex = 2;
             this.chkAutoConnect.Text = "Automatically connect on start";
-            this.chkAutoConnect.UseVisualStyleBackColor = true;
+            this.chkAutoConnect.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.chkAutoConnect.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.chkAutoConnect.UseVisualStyleBackColor = false;
             // 
             // btnSave
             // 
@@ -86,6 +92,9 @@
             this.btnSave.TabStop = false;
             this.btnSave.Text = "Save";
             this.btnSave.Click += new System.EventHandler(this.OnSaveClick);
+            this.btnSave.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.btnSave.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.btnSave.UseVisualStyleBackColor = false;
             // 
             // btnOpenFolder
             // 
@@ -97,6 +106,9 @@
             this.btnOpenFolder.TabStop = false;
             this.btnOpenFolder.Text = "Open profiles folder";
             this.btnOpenFolder.Click += new System.EventHandler(this.OnProfilesFolderClick);
+            this.btnOpenFolder.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.btnOpenFolder.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.btnOpenFolder.UseVisualStyleBackColor = false;
             // 
             // ddlLogLevel
             // 
@@ -142,7 +154,9 @@
             this.chkAutoUpdate.Size = new System.Drawing.Size(144, 17);
             this.chkAutoUpdate.TabIndex = 9;
             this.chkAutoUpdate.Text = "Check online for updates";
-            this.chkAutoUpdate.UseVisualStyleBackColor = true;
+            this.chkAutoUpdate.BackColor = Color.FromArgb(216, 0, 0, 0);
+            this.chkAutoUpdate.ForeColor = Color.FromArgb(216, 255, 255, 255);
+            this.chkAutoUpdate.UseVisualStyleBackColor = false;
             // 
             // chkNotify
             // 
