@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using WireSockUI.Extensions;
 using WireSockUI.Native;
+using static WireSockUI.Native.WireguardConfigParser;
 
 namespace WireSockUI.Config
 {
@@ -47,13 +48,15 @@ namespace WireSockUI.Config
             if (!File.Exists(profilePath))
                 throw new FileNotFoundException($"Profile {Path.GetFileName(profilePath)} does not exist.");
 
-            var sections = IniFile.GetSectionNames(profilePath);
+            var parser = new ConfigParser(profilePath);
+            var sections = parser.GetSectionNames();
 
-            if (!sections.Contains("Interface"))
+            var configESections = sections as string[] ?? sections.ToArray();
+            if (!configESections.Contains("Interface"))
                 throw new ArgumentException(
                     $"Profile {Path.GetFileName(profilePath)} does not contain an \"Interface\" section.");
 
-            var section = IniFile.GetSection(profilePath, "Interface");
+            var section = parser.GetSection("Interface");
 
             // Validate minimum required fields
             if (!section.ContainsKey("PrivateKey"))
@@ -69,11 +72,11 @@ namespace WireSockUI.Config
             Dns = section.Get("DNS");
             Mtu = section.Get("MTU");
 
-            if (!sections.Contains("Peer"))
+            if (!configESections.Contains("Peer"))
                 throw new ArgumentException(
                     $"Profile {Path.GetFileName(profilePath)} does not contain an \"Peer\" section.");
 
-            section = IniFile.GetSection(profilePath, "Peer");
+            section = parser.GetSection("Peer");
 
             // Validate minimum required fields
             if (!section.ContainsKey("PublicKey"))

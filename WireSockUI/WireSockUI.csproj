@@ -111,7 +111,7 @@
     <Compile Include="Extensions\NumberExtensions.cs" />
     <Compile Include="Extensions\TimeExtensions.cs" />
     <Compile Include="Global.cs" />
-    <Compile Include="Native\INIFile.cs" />
+    <Compile Include="Native\WireguardConfigParser.cs" />
     <Compile Include="Native\IPHelper.cs" />
     <Compile Include="Forms\frmEdit.cs">
       <SubType>Form</SubType>

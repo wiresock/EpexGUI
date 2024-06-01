@@ -235,6 +235,7 @@ namespace WireSockUI.Forms
                         case "mtu":
                         case "listenport":
                         case "persistentkeepalive":
+                        case "scriptexectimeout":
                         {
                             if (!int.TryParse(m.Groups["value"].Value, out var intValue))
                             {
@@ -271,6 +272,10 @@ namespace WireSockUI.Forms
                         // String values
                         case "socks5proxyusername":
                         case "socks5proxypassword":
+                        case "preup":
+                        case "postup":
+                        case "predown":
+                        case "postdown":
                             break;
                         // Unrecognized keys
                         default:
