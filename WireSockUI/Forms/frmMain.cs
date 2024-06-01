@@ -599,8 +599,14 @@ namespace WireSockUI.Forms
 
         private void OnWireSockLogMessage(WireSockManager.LogMessage logMessage)
         {
-            lstLog.Items.Add(new ListViewItem(new[]
-                { logMessage.Timestamp.ToString(Resources.LogTimestampFormat), logMessage.Message }));
+            lstLog.BeginUpdate();
+
+            ListViewItem item = new ListViewItem(new[]
+                { logMessage.Timestamp.ToString(Resources.LogTimestampFormat), logMessage.Message });
+            lstLog.Items.Add(item);
+            lstLog.Items[lstLog.Items.Count - 1].EnsureVisible();
+
+            lstLog.EndUpdate();
         }
 
         #region Layout
