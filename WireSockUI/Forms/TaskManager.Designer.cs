@@ -34,6 +34,7 @@
             this.imgProcesses = new System.Windows.Forms.ImageList(this.components);
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.checkBoxShowUserProcesses = new System.Windows.Forms.CheckBox();
             this.resControls = new WireSockUI.Extensions.ControlTextExtender();
             ((System.ComponentModel.ISupportInitialize)(this.resControls)).BeginInit();
             this.SuspendLayout();
@@ -53,13 +54,14 @@
             this.lstProcesses.Name = "lstProcesses";
             this.resControls.SetResourceKey(this.lstProcesses, null);
             this.lstProcesses.ShowGroups = false;
-            this.lstProcesses.Size = new System.Drawing.Size(318, 271);
+            this.lstProcesses.Size = new System.Drawing.Size(346, 273);
             this.lstProcesses.SmallImageList = this.imgProcesses;
             this.lstProcesses.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lstProcesses.TabIndex = 0;
             this.lstProcesses.UseCompatibleStateImageBehavior = false;
             this.lstProcesses.View = System.Windows.Forms.View.Details;
             this.lstProcesses.ItemActivate += new System.EventHandler(this.OnProcessSelected);
+            this.lstProcesses.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnProcessKeyPress);
             // 
             // colProcess
             // 
@@ -75,10 +77,10 @@
             // txtSearch
             // 
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSearch.Location = new System.Drawing.Point(8, 278);
+            this.txtSearch.Location = new System.Drawing.Point(6, 279);
             this.txtSearch.Name = "txtSearch";
             this.resControls.SetResourceKey(this.txtSearch, null);
-            this.txtSearch.Size = new System.Drawing.Size(284, 20);
+            this.txtSearch.Size = new System.Drawing.Size(308, 20);
             this.txtSearch.TabIndex = 25;
             this.txtSearch.TabStop = false;
             this.txtSearch.TextChanged += new System.EventHandler(this.OnFindProcessChanged);
@@ -86,14 +88,29 @@
             // btnRefresh
             // 
             this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRefresh.Location = new System.Drawing.Point(293, 278);
+            this.btnRefresh.Location = new System.Drawing.Point(320, 279);
             this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Padding = new System.Windows.Forms.Padding(0, 0, 2, 2);
             this.resControls.SetResourceKey(this.btnRefresh, null);
             this.btnRefresh.Size = new System.Drawing.Size(20, 20);
             this.btnRefresh.TabIndex = 26;
             this.btnRefresh.TabStop = false;
             this.btnRefresh.UseVisualStyleBackColor = false;
             this.btnRefresh.Click += new System.EventHandler(this.OnRefreshClick);
+            // 
+            // checkBoxShowUserProcesses
+            // 
+            this.checkBoxShowUserProcesses.AutoSize = true;
+            this.checkBoxShowUserProcesses.Checked = true;
+            this.checkBoxShowUserProcesses.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxShowUserProcesses.Location = new System.Drawing.Point(6, 305);
+            this.checkBoxShowUserProcesses.Name = "checkBoxShowUserProcesses";
+            this.resControls.SetResourceKey(this.checkBoxShowUserProcesses, null);
+            this.checkBoxShowUserProcesses.Size = new System.Drawing.Size(177, 17);
+            this.checkBoxShowUserProcesses.TabIndex = 27;
+            this.checkBoxShowUserProcesses.Text = "Hide processes from other users";
+            this.checkBoxShowUserProcesses.UseVisualStyleBackColor = true;
+            this.checkBoxShowUserProcesses.CheckedChanged += new System.EventHandler(this.OnChangeUserProcessVisibilityCheckBox);
             // 
             // resControls
             // 
@@ -103,7 +120,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(318, 315);
+            this.ClientSize = new System.Drawing.Size(346, 334);
+            this.Controls.Add(this.checkBoxShowUserProcesses);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.lstProcesses);
@@ -128,5 +146,6 @@
         private System.Windows.Forms.ColumnHeader colProcess;
         private System.Windows.Forms.Button btnRefresh;
         private Extensions.ControlTextExtender resControls;
+        private System.Windows.Forms.CheckBox checkBoxShowUserProcesses;
     }
 }
