@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace WireSockUI.Forms
 {
     public partial class TaskManager : Form
     {
+        private readonly List<ListViewItem> _cachedProcessListItems = new List<ListViewItem>();
+
         public TaskManager()
         {
             InitializeComponent();
@@ -31,20 +34,21 @@ namespace WireSockUI.Forms
                 txtSearch.SetCueBanner(Resources.ProcessesSearchCue);
 
             UpdateProcesses();
+            FilterProcesses(null);
         }
 
         public string ReturnValue { get; private set; }
 
-        public void UpdateProcesses()
+        private void UpdateProcesses()
         {
-            lstProcesses.Items.Clear();
+            _cachedProcessListItems.Clear();
             lstProcesses.SmallImageList.Images.Clear();
 
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
             // Get unique processes for the current user
             var processes = ProcessList.GetProcessList()
-                .Where(p => p.User == currentUser)
+                .Where(p => !checkBoxShowUserProcesses.Checked || p.User == currentUser)
                 .Distinct(ProcessEntry.Comparer);
 
             // Add a default icon to the list view's image list
@@ -79,32 +83,44 @@ namespace WireSockUI.Forms
 
                 // Create a new list view item for the process and add it to the list view
                 var listViewItem = new ListViewItem(displayName, iconKey);
-                lstProcesses.Items.Add(listViewItem);
+                _cachedProcessListItems.Add(listViewItem);
             }
+        }
+
+        private void FilterProcesses(string filter)
+        {
+            lstProcesses.BeginUpdate();
+            lstProcesses.Items.Clear();
+
+            if (string.IsNullOrEmpty(filter))
+            {
+                lstProcesses.Items.AddRange(_cachedProcessListItems.ToArray());
+            }
+            else
+            {
+                foreach (var item in _cachedProcessListItems)
+                {
+                    if (item.Text.IndexOf(filter, StringComparison.OrdinalIgnoreCase) != -1)
+                    {
+                        var addedItem = lstProcesses.Items.Add(item);
+                        addedItem.Selected = true;
+                        addedItem.EnsureVisible();
+                    }
+                }
+            }
+
+            lstProcesses.EndUpdate();
         }
 
         private void OnRefreshClick(object sender, EventArgs e)
         {
             UpdateProcesses();
-            txtSearch.Text = string.Empty;
+            FilterProcesses(txtSearch.Text);
         }
 
         private void OnFindProcessChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtSearch.Text))
-            {
-                foreach (ListViewItem item in lstProcesses.Items)
-                    if (item.Text.StartsWith(txtSearch.Text, StringComparison.OrdinalIgnoreCase))
-                    {
-                        item.EnsureVisible();
-                        item.Selected = true;
-                        return;
-                    }
-            }
-            else
-            {
-                foreach (ListViewItem item in lstProcesses.SelectedItems) item.Selected = false;
-            }
+            FilterProcesses(txtSearch.Text);
         }
 
         private void OnProcessSelected(object sender, EventArgs e)
@@ -112,6 +128,21 @@ namespace WireSockUI.Forms
             DialogResult = DialogResult.OK;
             ReturnValue = lstProcesses.SelectedItems[0].Text;
             Close();
+        }
+
+        private void OnProcessKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsControl(e.KeyChar)) return;
+            txtSearch.Focus();
+            txtSearch.Text += e.KeyChar;
+            txtSearch.SelectionStart = txtSearch.Text.Length;
+            e.Handled = true;
+        }
+
+        private void OnChangeUserProcessVisibilityCheckBox(object sender, EventArgs e)
+        {
+            UpdateProcesses();
+            FilterProcesses(txtSearch.Text);
         }
     }
 }

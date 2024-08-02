@@ -177,8 +177,14 @@
   <data name="DialogOpenFileTitle" xml:space="preserve">
     <value>Select configuration file</value>
   </data>
+  <data name="EditAllowApp" xml:space="preserve">
+    <value>Allow App...</value>
+  </data>
   <data name="EditCancel" xml:space="preserve">
     <value>Cancel</value>
+  </data>
+  <data name="EditDisallowApp" xml:space="preserve">
+    <value>Disallow App...</value>
   </data>
   <data name="EditName" xml:space="preserve">
     <value>Name:</value>
