@@ -20,27 +20,30 @@ namespace WireSockUI.Forms
 
         private volatile bool _highlighting;
 
-        public FrmEdit()
+        private string _targetConfigurationKeyName;
+
+        public FrmEdit() : this(null)
         {
-            Initialize();
-
-            Text = Resources.EditProfileTitleNew;
-            txtEditor.Text = Resources.template_conf;
-
-            var textChanged = ApplySyntaxHighlighting();
-            if (textChanged)
-                // Call it again to reapply highlighting
-                ApplySyntaxHighlighting();
         }
 
         public FrmEdit(string config)
         {
             Initialize();
 
-            Text = string.Format(Resources.EditProfileTitle, config);
+            ShowInTaskbar = false;
 
-            txtProfileName.Text = config; //.ToLowerInvariant();
-            txtEditor.Text = File.ReadAllText(Path.Combine(Global.ConfigsFolder, config + ".conf"));
+            if (string.IsNullOrEmpty(config))
+            {
+                Text = Resources.EditProfileTitleNew;
+                txtEditor.Text = Resources.template_conf;
+            }
+            else
+            {
+                Text = string.Format(Resources.EditProfileTitle, config);
+
+                txtProfileName.Text = config;
+                txtEditor.Text = File.ReadAllText(Path.Combine(Global.ConfigsFolder, config + ".conf"));
+            }
 
             var textChanged = ApplySyntaxHighlighting();
             if (textChanged)
@@ -301,12 +304,59 @@ namespace WireSockUI.Forms
             return textChanged;
         }
 
+        private void InsertOrAppendConfigurationValue(string key, string value)
+        {
+            // Insertion must be robust: it needs to handle incomplete or malformed configurations since
+            // our user is in the middle of editing the file. Parsing isn't really an option.
+            var possibleKeyValueMatch = new Regex(
+                $@"^\s*(?<comment>[;#].*)?{key}((?<afterkey>[ \t]*$)|[ \t]+(?<equals>=)?(?<afterkey>.*?)$)",
+                RegexOptions.Multiline);
+
+            int textReplacementIndex = txtEditor.Text.Length;
+            int textReplacementLength = 0;
+
+            // We'll first try matching the key alone while skipping commented lines. Then determine whether
+            // a value is already present or not. Equals signs are optional. Examples:
+            // "DisallowedApps = app1,app2, "
+            // "DisallowedApps = app 1,app2"
+            // "DisallowedApps     "
+            var newValue = $"\n{key} = {value}";
+
+            foreach (Match m in possibleKeyValueMatch.Matches(txtEditor.Text))
+            {
+                if (m.Groups["comment"].Success) continue;
+
+                newValue = !m.Groups["equals"].Success ? " =" : string.Empty;
+                var afterKeyPart = m.Groups["afterkey"].Value.Trim();
+
+                if (afterKeyPart.EndsWith(","))
+                    newValue += $" {afterKeyPart}{value}";
+                else if (!string.IsNullOrWhiteSpace(afterKeyPart))
+                    newValue += $" {afterKeyPart},{value}";
+                else
+                    newValue += $" {value}";
+
+                textReplacementIndex = m.Groups["afterkey"].Index;
+                textReplacementLength = m.Groups["afterkey"].Length;
+                break;
+            }
+
+            txtEditor.Text = txtEditor.Text
+                .Remove(textReplacementIndex, textReplacementLength)
+                .Insert(textReplacementIndex, newValue);
+            txtEditor.SelectionStart = textReplacementIndex + newValue.Length;
+            txtEditor.SelectionLength = 0;
+        }
+
         private void Initialize()
         {
             InitializeComponent();
 
             Icon = Resources.ico;
             txtProfileName.SetCueBanner(Resources.EditProfileCue);
+            toolStripMenuItemByProcName.Image = WindowsIcons.GetWindowsIcon(WindowsIcons.Icons.ProcessList, 16).ToBitmap();
+            toolStripMenuItemByDirPath.Image = WindowsIcons.GetWindowsIcon(WindowsIcons.Icons.OpenTunnel, 16).ToBitmap();
+            toolStripMenuItemByFilePath.Image = WindowsIcons.GetWindowsIcon(WindowsIcons.Icons.NewTunnel, 16).ToBitmap();
         }
 
         private void OnSaveClick(object sender, EventArgs e)
@@ -348,22 +398,53 @@ namespace WireSockUI.Forms
             Close();
         }
 
-        private void OnProcessClick(object sender, EventArgs e)
-        {
-            using (var taskManager = new TaskManager())
-            {
-                if (taskManager.ShowDialog() != DialogResult.OK) return;
-                txtEditor.SelectionLength = 0;
-                txtEditor.SelectedText = taskManager.ReturnValue;
-            }
-        }
-
         private void OnProfileChanged(object sender, EventArgs e)
         {
             var textChanged = ApplySyntaxHighlighting();
             if (textChanged)
                 // Call it again to reapply highlighting
                 ApplySyntaxHighlighting();
+        }
+
+        private void OnAddAllowedAppClick(object sender, EventArgs e)
+        {
+            _targetConfigurationKeyName = "AllowedApps";
+            contextMenuStripAllow.Show(btnAddAllowedApp, new Point(0, btnAddAllowedApp.Height));
+        }
+
+        private void OnAddDisallowedAppClick(object sender, EventArgs e)
+        {
+            _targetConfigurationKeyName = "DisallowedApps";
+            contextMenuStripAllow.Show(btnAddDisallowedApp, new Point(0, btnAddDisallowedApp.Height));
+        }
+
+        private void OnAllowAppByProcessNameClick(object sender, EventArgs e)
+        {
+            using (var taskManager = new TaskManager())
+            {
+                if (taskManager.ShowDialog() != DialogResult.OK) return;
+                InsertOrAppendConfigurationValue(_targetConfigurationKeyName, taskManager.ReturnValue);
+            }
+        }
+
+        private void OnAllowAppByDirPathClick(object sender, EventArgs e)
+        {
+            using (var openFolderDialog = new FolderBrowserDialog())
+            {
+                if (openFolderDialog.ShowDialog() != DialogResult.OK) return;
+                openFolderDialog.SelectedPath += Path.DirectorySeparatorChar;
+
+                InsertOrAppendConfigurationValue(_targetConfigurationKeyName, openFolderDialog.SelectedPath);
+            }
+        }
+
+        private void OnAllowAppByFileNameClick(object sender, EventArgs e)
+        {
+            using (var openFileDialog = new OpenFileDialog())
+            {
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+                InsertOrAppendConfigurationValue(_targetConfigurationKeyName, openFileDialog.FileName);
+            }
         }
     }
 }

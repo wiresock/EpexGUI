@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pnlTop = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblPublicKey = new System.Windows.Forms.Label();
@@ -35,15 +36,21 @@
             this.txtProfileName = new System.Windows.Forms.TextBox();
             this.lblName = new System.Windows.Forms.Label();
             this.pnlBottom = new System.Windows.Forms.Panel();
-            this.btnProcessList = new System.Windows.Forms.Button();
+            this.btnAddDisallowedApp = new System.Windows.Forms.Button();
+            this.btnAddAllowedApp = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.txtEditor = new System.Windows.Forms.RichTextBox();
             this.resControls = new WireSockUI.Extensions.ControlTextExtender();
+            this.contextMenuStripAllow = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemByProcName = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemByDirPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemByFilePath = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlTop.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlBottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.resControls)).BeginInit();
+            this.contextMenuStripAllow.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlTop
@@ -131,7 +138,8 @@
             // 
             // pnlBottom
             // 
-            this.pnlBottom.Controls.Add(this.btnProcessList);
+            this.pnlBottom.Controls.Add(this.btnAddDisallowedApp);
+            this.pnlBottom.Controls.Add(this.btnAddAllowedApp);
             this.pnlBottom.Controls.Add(this.btnSave);
             this.pnlBottom.Controls.Add(this.btnCancel);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -141,23 +149,36 @@
             this.pnlBottom.Size = new System.Drawing.Size(664, 35);
             this.pnlBottom.TabIndex = 45;
             // 
-            // btnProcessList
+            // btnAddDisallowedApp
             // 
-            this.btnProcessList.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnProcessList.Location = new System.Drawing.Point(6, 6);
-            this.btnProcessList.Name = "btnProcessList";
-            this.resControls.SetResourceKey(this.btnProcessList, "EditProcesses");
-            this.btnProcessList.Size = new System.Drawing.Size(75, 23);
-            this.btnProcessList.TabIndex = 2;
-            this.btnProcessList.Text = "Processes...";
-            this.btnProcessList.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnProcessList.UseVisualStyleBackColor = true;
-            this.btnProcessList.Click += new System.EventHandler(this.OnProcessClick);
+            this.btnAddDisallowedApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAddDisallowedApp.Location = new System.Drawing.Point(91, 6);
+            this.btnAddDisallowedApp.Name = "btnAddDisallowedApp";
+            this.resControls.SetResourceKey(this.btnAddDisallowedApp, "EditDisallowApp");
+            this.btnAddDisallowedApp.Size = new System.Drawing.Size(85, 23);
+            this.btnAddDisallowedApp.TabIndex = 3;
+            this.btnAddDisallowedApp.Text = "Disallow App...";
+            this.btnAddDisallowedApp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnAddDisallowedApp.UseVisualStyleBackColor = true;
+            this.btnAddDisallowedApp.Click += new System.EventHandler(this.OnAddDisallowedAppClick);
+            // 
+            // btnAddAllowedApp
+            // 
+            this.btnAddAllowedApp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAddAllowedApp.Location = new System.Drawing.Point(12, 6);
+            this.btnAddAllowedApp.Name = "btnAddAllowedApp";
+            this.resControls.SetResourceKey(this.btnAddAllowedApp, "EditAllowApp");
+            this.btnAddAllowedApp.Size = new System.Drawing.Size(73, 23);
+            this.btnAddAllowedApp.TabIndex = 2;
+            this.btnAddAllowedApp.Text = "Allow App...";
+            this.btnAddAllowedApp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnAddAllowedApp.UseVisualStyleBackColor = true;
+            this.btnAddAllowedApp.Click += new System.EventHandler(this.OnAddAllowedAppClick);
             // 
             // btnSave
             // 
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(497, 6);
+            this.btnSave.Location = new System.Drawing.Point(496, 6);
             this.btnSave.Name = "btnSave";
             this.resControls.SetResourceKey(this.btnSave, "EditSave");
             this.btnSave.Size = new System.Drawing.Size(75, 23);
@@ -169,7 +190,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(580, 6);
+            this.btnCancel.Location = new System.Drawing.Point(577, 6);
             this.btnCancel.Name = "btnCancel";
             this.resControls.SetResourceKey(this.btnCancel, "EditCancel");
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
@@ -195,6 +216,40 @@
             // 
             this.resControls.ResourceClassName = "WireSockUI.Properties.Resources";
             // 
+            // contextMenuStripAllow
+            // 
+            this.contextMenuStripAllow.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemByProcName,
+            this.toolStripMenuItemByDirPath,
+            this.toolStripMenuItemByFilePath});
+            this.contextMenuStripAllow.Name = "contextMenuStripAllow";
+            this.resControls.SetResourceKey(this.contextMenuStripAllow, null);
+            this.contextMenuStripAllow.Size = new System.Drawing.Size(174, 70);
+            // 
+            // toolStripMenuItemByProcName
+            // 
+            this.toolStripMenuItemByProcName.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripMenuItemByProcName.Name = "toolStripMenuItemByProcName";
+            this.toolStripMenuItemByProcName.Size = new System.Drawing.Size(173, 22);
+            this.toolStripMenuItemByProcName.Text = "By process name...";
+            this.toolStripMenuItemByProcName.Click += new System.EventHandler(this.OnAllowAppByProcessNameClick);
+            // 
+            // toolStripMenuItemByDirPath
+            // 
+            this.toolStripMenuItemByDirPath.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripMenuItemByDirPath.Name = "toolStripMenuItemByDirPath";
+            this.toolStripMenuItemByDirPath.Size = new System.Drawing.Size(173, 22);
+            this.toolStripMenuItemByDirPath.Text = "By directory path...";
+            this.toolStripMenuItemByDirPath.Click += new System.EventHandler(this.OnAllowAppByDirPathClick);
+            // 
+            // toolStripMenuItemByFilePath
+            // 
+            this.toolStripMenuItemByFilePath.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripMenuItemByFilePath.Name = "toolStripMenuItemByFilePath";
+            this.toolStripMenuItemByFilePath.Size = new System.Drawing.Size(173, 22);
+            this.toolStripMenuItemByFilePath.Text = "By file path...";
+            this.toolStripMenuItemByFilePath.Click += new System.EventHandler(this.OnAllowAppByFileNameClick);
+            // 
             // FrmEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -216,6 +271,7 @@
             this.tableLayoutPanel1.PerformLayout();
             this.pnlBottom.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.resControls)).EndInit();
+            this.contextMenuStripAllow.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -231,7 +287,12 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.RichTextBox txtEditor;
-        private System.Windows.Forms.Button btnProcessList;
+        private System.Windows.Forms.Button btnAddAllowedApp;
         private Extensions.ControlTextExtender resControls;
+        private System.Windows.Forms.Button btnAddDisallowedApp;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripAllow;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemByProcName;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemByDirPath;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemByFilePath;
     }
 }
