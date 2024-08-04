@@ -20,6 +20,9 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
+    env:
+      ARTIFACT_ZIP_NAME: 'WireSockUI-${{ github.ref_name }}-${{ matrix.platform }}${{ matrix.uwp_suffix }}'
+      ARTIFACT_SRC_PATH: 'bin/${{ matrix.platform }}/${{ matrix.build_configuration }}/${{ matrix.framework }}/publish/'
     steps:
       - name: Checkout from GitHub
         uses: actions/checkout@v4
@@ -41,35 +44,34 @@ jobs:
       - name: Build
         run: dotnet publish WireSockUI/WireSockUI.csproj --configuration "${{ matrix.build_configuration }}" --framework "${{ matrix.framework }}" --no-self-contained /p:Platform="${{ matrix.platform }}" /p:Version="${{ env.WIRESOCKUI_VERSION }}" /p:Repository="${{ github.repository }}"
 
+      - name: Create zip archive
+        shell: bash
+        run: |
+          # Exclude .pdb and .winmd files
+          cd "${{ env.ARTIFACT_SRC_PATH }}"
+          7z a -tzip "${{ github.workspace }}/${{ env.ARTIFACT_ZIP_NAME }}.zip" . -xr!*.pdb -xr!*.winmd
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 'WireSockUI-${{ github.ref_name }}-${{ matrix.platform }}${{ matrix.uwp_suffix }}'
-          path: |
-            bin/${{ matrix.platform }}/${{ matrix.build_configuration }}/${{ matrix.framework }}/publish/
-            !bin/**/*.winmd
-            !bin/**/*.pdb
+          name: '${{ env.ARTIFACT_ZIP_NAME }}'
+          path: '${{ env.ARTIFACT_ZIP_NAME }}.zip'
           if-no-files-found: error
 
   upload-release:
-    if: ${{ always() }}
+    if: ${{ success() }}
     needs: build-and-package
     runs-on: windows-latest
     steps:
       - name: Checkout from GitHub
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           path: 'artifacts'
-
-      - name: Parse Version
-        shell: bash
-        run: |
-          # Strip "v" prefix from tag name 
-          VERSION=$(echo ${{ github.ref_name }} | sed -e 's/^v//') 
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Upload Release
         uses: ncipollo/release-action@v1
