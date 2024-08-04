@@ -1,87 +1,53 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Version Condition="'$(Version)' == ''">0.0.1</Version>
-    <Repository Condition="'$(Repository)' == ''">
-    </Repository>
     <ProjectGuid>{C309F359-DAFF-42D0-8379-70ECC9688943}</ProjectGuid>
     <OutputType>WinExe</OutputType>
+    <Configurations>Debug;Release;Debug UWP;Release UWP</Configurations>
+    <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
+    <TargetFrameworks>net472-windows</TargetFrameworks> <!-- or net8.0-windows10.0.19041.0 -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <RootNamespace>WireSockUI</RootNamespace>
-    <AssemblyName>WireSockUI</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetPlatformVersion>8.0</TargetPlatformVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" $(Configuration.StartsWith('Debug')) ">
+    <DebugType>portable</DebugType>
+    <OutputPath>..\bin\$(Platform)\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" $(Configuration.StartsWith('Release')) ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
     <Deterministic>true</Deterministic>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <OutputPath>..\bin\$(Platform)\$(Configuration)\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\exe\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\bin\exe\AnyCPU\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
+  <!-- Set up assembly metadata -->
   <PropertyGroup>
-    <ApplicationIcon>Resources\wiresock.ico</ApplicationIcon>
+    <DefineConstants Condition=" $(Configuration.Contains('UWP')) ">$(DefineConstants);WIRESOCKUI_ENABLE_UWP</DefineConstants>
+    <Version Condition=" '$(Version)' == '' ">0.0.1</Version>
+
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyName>WireSockUI</AssemblyName>
+    <AssemblyTitle>WireSockUI</AssemblyTitle>
+    <FileVersion>$(Version)</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+    <Product>WireSock UI</Product>
+    <Copyright>Copyright %A9 2023</Copyright>
   </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
-    <OutputPath>..\bin\exe\ARM64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
+
   <ItemGroup>
+    <AssemblyAttributes Include="AssemblyMetadata">
+      <_Parameter1>Repository</_Parameter1>
+      <_Parameter2>$(Repository)</_Parameter2>
+    </AssemblyAttributes>
+  </ItemGroup>
+
+  <!-- Dependencies when targeting .NET Framework -->
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net472')) ">
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+    <PackageReference Include="TaskScheduler" Version="2.10.1" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Design" />
@@ -93,139 +59,105 @@
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.InteropServices.WindowsRuntime" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="Windows.Data" />
-    <Reference Include="Windows.Foundation" />
-    <Reference Include="Windows.UI" />
+    <Reference Condition=" $(Configuration.Contains('UWP')) " Include="Windows.Data">
+      <HintPath>$(SystemRoot)\System32\WinMetadata\Windows.Data.winmd</HintPath>
+    </Reference>
+    <Reference Condition=" $(Configuration.Contains('UWP')) " Include="Windows.Foundation">
+      <HintPath>$(SystemRoot)\System32\WinMetadata\Windows.Foundation.winmd</HintPath>
+    </Reference>
+    <Reference Condition=" $(Configuration.Contains('UWP')) " Include="Windows.UI">
+      <HintPath>$(SystemRoot)\System32\WinMetadata\Windows.UI.winmd</HintPath>
+    </Reference>
   </ItemGroup>
+
+  <!-- Dependencies when targeting .NET Core -->
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net8.0')) ">
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+    <PackageReference Include="TaskScheduler" Version="2.10.1" />
+  </ItemGroup>
+
+  <!-- Conditional UWP support -->
+  <ItemGroup Condition=" !$(Configuration.Contains('UWP')) ">
+    <Compile Remove="Notifications\Notifications.cs" />
+    <Content Include="Notifications\Notifications.cs" />
+    <Compile Remove="Extensions\GitHubExtensions.cs" />
+    <Content Include="Extensions\GitHubExtensions.cs" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ApplicationIcon>Resources\wiresock.ico</ApplicationIcon>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Config\Curve25519.cs" />
-    <Compile Include="Extensions\BitmapExtensions.cs" />
-    <Compile Include="Extensions\GitHubExtensions.cs" />
-    <Compile Include="Extensions\MenuTextExtender.cs">
+    <Compile Update="Extensions\MenuTextExtender.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Extensions\ControlTextExtender.cs">
+    <Compile Update="Extensions\ControlTextExtender.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Extensions\NumberExtensions.cs" />
-    <Compile Include="Extensions\TimeExtensions.cs" />
-    <Compile Include="Global.cs" />
-    <Compile Include="Native\WireguardConfigParser.cs" />
-    <Compile Include="Native\IPHelper.cs" />
-    <Compile Include="Forms\frmEdit.cs">
+    <Compile Update="Forms\frmEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmEdit.Designer.cs">
+    <Compile Update="Forms\frmEdit.Designer.cs">
       <DependentUpon>frmEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmMain.cs">
+    <Compile Update="Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmMain.Designer.cs">
+    <Compile Update="Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmSettings.cs">
+    <Compile Update="Forms\frmSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmSettings.Designer.cs">
+    <Compile Update="Forms\frmSettings.Designer.cs">
       <DependentUpon>frmSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Config\Profile.cs" />
-    <Compile Include="Native\ProcessEntry.cs" />
-    <Compile Include="Native\WindowsApplicationContext.cs" />
-    <Compile Include="Notifications\Notifications.cs" />
-    <Compile Include="Native\ProcessList.cs" />
-    <Compile Include="Native\CommonControlExtensions.cs" />
-    <Compile Include="Native\WindowsIcons.cs" />
-    <Compile Include="Native\ShellLink.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Forms\TaskManager.cs">
+    <Compile Update="Forms\TaskManager.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\TaskManager.Designer.cs">
+    <Compile Update="Forms\TaskManager.Designer.cs">
       <DependentUpon>TaskManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="Native\WireguardBoosterExports.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="WireSockManager.cs" />
-    <EmbeddedResource Include="Forms\frmEdit.resx">
+    <EmbeddedResource Update="Forms\frmEdit.resx">
       <DependentUpon>frmEdit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmMain.resx">
+    <EmbeddedResource Update="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmSettings.resx">
+    <EmbeddedResource Update="Forms\frmSettings.resx">
       <DependentUpon>frmSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TaskManager.resx">
+    <EmbeddedResource Update="Forms\TaskManager.resx">
       <DependentUpon>TaskManager.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
-    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Content Include="Resources\template.conf" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\wiresock.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="TaskScheduler">
-      <Version>2.10.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="BeforeBuild">
-    <ItemGroup>
-      <AssemblyAttributes Include="AssemblyVersion">
-        <_Parameter1>$(Version)</_Parameter1>
-      </AssemblyAttributes>
-      <AssemblyAttributes Include="AssemblyFileVersion">
-        <_Parameter1>$(Version)</_Parameter1>
-      </AssemblyAttributes>
-      <AssemblyAttributes Include="AssemblyMetadata">
-        <_Parameter1>Repository</_Parameter1>
-        <_Parameter2>$(Repository)</_Parameter2>
-      </AssemblyAttributes>
-    </ItemGroup>
-    <MakeDir Directories="$(IntermediateOutputPath)" />
-    <WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)Version.cs" AssemblyAttributes="@(AssemblyAttributes)" />
-    <ItemGroup>
-      <Compile Include="$(IntermediateOutputPath)Version.cs" />
-    </ItemGroup>
-  </Target>
 </Project>

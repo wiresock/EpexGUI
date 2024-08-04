@@ -3,20 +3,32 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireSockUI", "WiresockUI\WireSockUI.csproj", "{C309F359-DAFF-42D0-8379-70ECC9688943}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WireSockUI", "WiresockUI\WireSockUI.csproj", "{C309F359-DAFF-42D0-8379-70ECC9688943}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug UWP|Any CPU = Debug UWP|Any CPU
+		Debug UWP|ARM64 = Debug UWP|ARM64
 		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM64 = Debug|ARM64
+		Release UWP|Any CPU = Release UWP|Any CPU
+		Release UWP|ARM64 = Release UWP|ARM64
 		Release|Any CPU = Release|Any CPU
 		Release|ARM64 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C309F359-DAFF-42D0-8379-70ECC9688943}.Debug UWP|Any CPU.ActiveCfg = Debug UWP|Any CPU
+		{C309F359-DAFF-42D0-8379-70ECC9688943}.Debug UWP|Any CPU.Build.0 = Debug UWP|Any CPU
+		{C309F359-DAFF-42D0-8379-70ECC9688943}.Debug UWP|ARM64.ActiveCfg = Debug UWP|ARM64
+		{C309F359-DAFF-42D0-8379-70ECC9688943}.Debug UWP|ARM64.Build.0 = Debug UWP|ARM64
 		{C309F359-DAFF-42D0-8379-70ECC9688943}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C309F359-DAFF-42D0-8379-70ECC9688943}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C309F359-DAFF-42D0-8379-70ECC9688943}.Debug|ARM64.ActiveCfg = Debug|ARM64
 		{C309F359-DAFF-42D0-8379-70ECC9688943}.Debug|ARM64.Build.0 = Debug|ARM64
+		{C309F359-DAFF-42D0-8379-70ECC9688943}.Release UWP|Any CPU.ActiveCfg = Release UWP|Any CPU
+		{C309F359-DAFF-42D0-8379-70ECC9688943}.Release UWP|Any CPU.Build.0 = Release UWP|Any CPU
+		{C309F359-DAFF-42D0-8379-70ECC9688943}.Release UWP|ARM64.ActiveCfg = Release UWP|ARM64
+		{C309F359-DAFF-42D0-8379-70ECC9688943}.Release UWP|ARM64.Build.0 = Release UWP|ARM64
 		{C309F359-DAFF-42D0-8379-70ECC9688943}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C309F359-DAFF-42D0-8379-70ECC9688943}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C309F359-DAFF-42D0-8379-70ECC9688943}.Release|ARM64.ActiveCfg = Release|ARM64

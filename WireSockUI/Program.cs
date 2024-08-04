@@ -30,7 +30,9 @@ namespace WireSockUI
                 Environment.Exit(1);
             }
 
+#if WIRESOCKUI_ENABLE_UWP
             CheckVersion();
+#endif
 
             Application.Run(new FrmMain());
         }
@@ -61,6 +63,7 @@ namespace WireSockUI
             return null;
         }
 
+#if WIRESOCKUI_ENABLE_UWP
         /// <summary>
         ///     Compare the local product version against the latest GitHub repository release tag
         /// </summary>
@@ -90,6 +93,7 @@ namespace WireSockUI
             {
             }
         }
+#endif
 
         /// <summary>
         ///     Determine if the WireSock library components are installed.

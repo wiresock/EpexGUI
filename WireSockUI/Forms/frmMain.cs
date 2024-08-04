@@ -358,9 +358,11 @@ namespace WireSockUI.Forms
                     if (!_tunnelStateWorker.IsBusy)
                         _tunnelStateWorker.RunWorkerAsync();
 
+#if WIRESOCKUI_ENABLE_UWP
                     if (notify && Settings.Default.EnableNotifications)
                         Notifications.Notifications.Notify(Resources.ToastActiveTitle,
                             string.Format(Resources.ToastActiveMessage, _wiresock.ProfileName));
+#endif
                     break;
                 case ConnectionState.Disconnected:
                     if (btnActivate != null)
@@ -397,9 +399,11 @@ namespace WireSockUI.Forms
                     gbxState.Visible = false;
                     _tunnelStateWorker.CancelAsync();
 
+#if WIRESOCKUI_ENABLE_UWP
                     if (notify && Settings.Default.EnableNotifications)
                         Notifications.Notifications.Notify(Resources.ToastInactiveTitle,
                             string.Format(Resources.ToastInactiveMessage, _wiresock.ProfileName));
+#endif
 
                     _wiresock.Disconnect();
                     break;

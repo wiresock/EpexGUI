@@ -9,58 +9,47 @@ jobs:
   build-and-package:
     strategy:
       matrix:
+        platform: ['AnyCPU', 'ARM64']
+        framework: ['net472-windows']
+        build_configuration: ['Release', 'Release UWP']
         include:
-          - platform: 'AnyCPU'
-            build_configuration: 'Release'
-            uwp_suffix: ''
-          - platform: 'AnyCPU'
-            build_configuration: 'Release'
+          - build_configuration: 'Release'
             uwp_suffix: '-no-uwp'
-          - platform: 'ARM64'
-            build_configuration: 'Release'
+          - build_configuration: 'Release UWP'
             uwp_suffix: ''
-            if_main: 'true'
     runs-on: windows-latest
     permissions:
       contents: write
     steps:
       - name: Checkout from GitHub
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          ref: ${{ (matrix.uwp_suffix == '') && github.ref || 'no-uwp' }}
+          ref: ${{ github.ref }}
 
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1
-
-      - name: Install NuGet CLI
-        run: choco install nuget.commandline
-
-      - name: Restore NuGet Packages
-        run: nuget restore WireSockUI.sln
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.x'
 
       - name: Parse Version
         shell: bash
         run: |
           # Strip "v" prefix from tag name 
-          VERSION=$(echo ${{ github.ref_name }} | sed -e 's/^v//') 
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          WIRESOCKUI_VERSION=$(echo ${{ github.ref_name }} | sed -e 's/^v//') 
+          echo "WIRESOCKUI_VERSION=${WIRESOCKUI_VERSION}" >> $GITHUB_ENV
 
       - name: Build
-        run: msbuild WireSockUI/WireSockUI.csproj -t:rebuild -verbosity:minimal -property:Configuration=Release -property:Platform=${{ matrix.platform }} -property:Version=${{ env.VERSION }} -property:Repository=${{ github.repository }}
-
-      - name: Package Release
-        uses: thedoctor0/zip-release@0.7.1
-        with:
-          type: 'zip'
-          filename: 'WireSockUI-${{ github.ref_name }}-${{ matrix.platform }}${{ matrix.uwp_suffix }}.zip'
-          directory: 'bin\exe\${{ matrix.platform }}\${{ matrix.build_configuration }}'
-          exclusions: '*.pdb'
+        run: dotnet publish WireSockUI/WireSockUI.csproj --configuration "${{ matrix.build_configuration }}" --framework "${{ matrix.framework }}" --no-self-contained /p:Platform="${{ matrix.platform }}" /p:Version="${{ env.WIRESOCKUI_VERSION }}" /p:Repository="${{ github.repository }}"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform }}-artifact
-          path: 'bin\exe\${{ matrix.platform }}\${{ matrix.build_configuration }}\WireSockUI-${{ github.ref_name }}-${{ matrix.platform }}${{ matrix.uwp_suffix }}.zip'
+          name: 'WireSockUI-${{ github.ref_name }}-${{ matrix.platform }}${{ matrix.uwp_suffix }}'
+          path: |
+            bin/${{ matrix.platform }}/${{ matrix.build_configuration }}/${{ matrix.framework }}/publish/
+            !bin/**/*.winmd
+            !bin/**/*.pdb
+          if-no-files-found: error
 
   upload-release:
     if: ${{ always() }}
