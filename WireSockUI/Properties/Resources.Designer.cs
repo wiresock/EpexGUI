@@ -115,6 +115,17 @@ namespace WireSockUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to an unsupported architecture message.
+        /// </summary>
+        internal static string AppUnsupportedArchMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("AppUnsupportedArchMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A newer WireSockUI client is available for download..
         /// </summary>
         internal static string AppUpdateMessage {

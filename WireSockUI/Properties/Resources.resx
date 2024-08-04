@@ -126,6 +126,9 @@
   <data name="AppNoWireSockMessage" xml:space="preserve">
     <value>WireSock VPN Client needs to be installed for WireSockUI to function.</value>
   </data>
+  <data name="AppUnsupportedArchMessage" xml:space="preserve">
+    <value>It looks like you are trying to run a version of WireSockUI that is not compatible with your system. Please use WireSockUI with the appropriate architecture instead.</value>
+  </data>
   <data name="AlreadyRunningTitle" xml:space="preserve">
     <value>Already Running</value>
   </data>

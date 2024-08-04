@@ -21,6 +21,13 @@ namespace WireSockUI
             if (!Directory.Exists(Global.MainFolder)) Directory.CreateDirectory(Global.MainFolder);
             if (!Directory.Exists(Global.ConfigsFolder)) Directory.CreateDirectory(Global.ConfigsFolder);
 
+            if (!IsWireSockArchitectureSupported())
+            {
+                MessageBox.Show(Resources.AppUnsupportedArchMessage, Resources.AppNoWireSockTitle,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
+
             if (!IsWireSockInstalled())
             {
                 MessageBox.Show(Resources.AppNoWireSockMessage, Resources.AppNoWireSockTitle, MessageBoxButtons.OK,
@@ -120,6 +127,20 @@ namespace WireSockUI
 
                 return File.Exists(wiresockLocation);
             }
+        }
+
+        /// <summary>
+        ///     Determine if running under a supported architecture.
+        /// </summary>
+        /// <remarks>
+        ///     WireSock VPN Client's wgbooster.dll currently forces us to match the operating system's architecture. Under
+        ///     normal circumstances this check always succeeds, but under a debugger AnyCPU builds may run as x86 or x64
+        ///     processes, disregarding the host OS bitness.
+        /// </remarks>
+        /// <returns><c>true</c> if supported, otherwise <c>false</c></returns>
+        private static bool IsWireSockArchitectureSupported()
+        {
+            return Environment.Is64BitOperatingSystem == Environment.Is64BitProcess;
         }
     }
 }
