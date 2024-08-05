@@ -9,7 +9,7 @@ Import-Module PowerShellForGitHub
 $owner = "wiresock"
 $repository = "WireSockUI"
 $baseURL = "https://github.com/$owner/$repository/releases/download/$versionTag/"
-$files = @("$repository-$versionTag-AnyCPU-no-uwp.zip", "$repository-$versionTag-AnyCPU.zip", "$repository-$versionTag-ARM64.zip")
+$files = @("$repository-$versionTag-AnyCPU-no-uwp.zip", "$repository-$versionTag-AnyCPU.zip", "$repository-$versionTag-ARM64-no-uwp.zip", "$repository-$versionTag-ARM64.zip")
 
 foreach ($file in $files) {
     $downloadURL = $baseURL + $file

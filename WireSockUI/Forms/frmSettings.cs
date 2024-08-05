@@ -192,7 +192,7 @@ namespace WireSockUI.Forms
         {
             try
             {
-                var appPath = Assembly.GetExecutingAssembly().Location;
+                var appPath = System.AppContext.BaseDirectory;
                 var startupFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
                 var shortcutPath = Path.Combine(startupFolderPath, GetAppName() + ".lnk");
 
