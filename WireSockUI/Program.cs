@@ -78,26 +78,32 @@ namespace WireSockUI
         private static void CheckVersion()
         {
             if (!Settings.Default.AutoUpdate) return;
-
+        
             try
             {
                 var repository = GetRepository();
-
+        
                 if (!string.IsNullOrWhiteSpace(repository))
                 {
                     var currentVersion = new Version(Application.ProductVersion);
                     var latestVersion = GitHubExtensions.GetLatestRelease(repository);
-
+        
                     if (currentVersion != null && latestVersion != null && latestVersion > currentVersion)
                     {
-                        MessageBox.Show(Resources.AppUpdateMessage, Resources.AppUpdateTitle, MessageBoxButtons.OK,
+                        var dialogResult = MessageBox.Show(Resources.AppUpdateMessage, Resources.AppUpdateTitle, MessageBoxButtons.OKCancel,
                             MessageBoxIcon.Information);
-                        OpenBrowser($"https://github.com/{repository}/releases");
+        
+                        if (dialogResult == DialogResult.OK)
+                        {
+                            OpenBrowser($"https://github.com/{repository}/releases");
+                        }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                // user possibly doesn't have internet
+                
             }
         }
 #endif
